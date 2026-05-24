@@ -60,6 +60,37 @@ jobs:
           MODEL="${OLLAMA_MODEL_INPUT:-llama3.2:1b}"
           ollama pull "$MODEL"
 
+      - name: Verify Ollama response
+        env:
+          OLLAMA_MODEL_INPUT: ${{ inputs.model }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import urllib.request
+
+          model = os.environ.get('OLLAMA_MODEL_INPUT') or 'llama3.2:1b'
+          payload = json.dumps({
+              'model': model,
+              'prompt': 'Return only JSON: {"welcome":"ok","topics":[["test","reply"],["plan","reply"],["build","reply"],["ship","reply"]]}',
+              'stream': False,
+          }).encode('utf-8')
+          req = urllib.request.Request(
+              'http://127.0.0.1:11434/api/generate',
+              data=payload,
+              headers={'Content-Type': 'application/json'},
+              method='POST',
+          )
+          with urllib.request.urlopen(req, timeout=60) as response:
+              raw = json.loads(response.read().decode('utf-8'))['response']
+          start = raw.find('{')
+          end = raw.rfind('}') + 1
+          parsed = json.loads(raw[start:end])
+          if not parsed.get('welcome') or len(parsed.get('topics', [])) < 4:
+              raise SystemExit('Ollama response did not contain usable chatbot copy.')
+          print('Ollama response verified.')
+          PY
+
       - name: Generate chatbot with Ollama
         env:
           CHATBOT_THEME: ${{ inputs.theme }}
