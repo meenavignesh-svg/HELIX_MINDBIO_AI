@@ -26,6 +26,9 @@ jobs:
   generate:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      MAIL_USERNAME_SET: ${{ secrets.MAIL_USERNAME != '' }}
+      MAIL_PASSWORD_SET: ${{ secrets.MAIL_PASSWORD != '' }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -73,7 +76,7 @@ jobs:
           file_pattern: ai-chatbots/**
 
       - name: Email chatbot notification
-        if: steps.auto_commit.outputs.changes_detected == 'true' && secrets.MAIL_USERNAME != '' && secrets.MAIL_PASSWORD != ''
+        if: steps.auto_commit.outputs.changes_detected == 'true' && env.MAIL_USERNAME_SET == 'true' && env.MAIL_PASSWORD_SET == 'true'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: ${{ secrets.MAIL_SERVER || 'smtp.gmail.com' }}
