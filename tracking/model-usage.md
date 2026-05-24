@@ -1,0 +1,15 @@
+# Model Usage
+
+| S.No | Project | Model | Mode | Notes |
+| ---: | --- | --- | --- | --- |
+| 1 | Earlier browser demos | Browser rules | Demo | Built-in response logic. |
+| 2 | OpenAI-ready projects | gpt-4.1-mini default | Optional backend | Visitor or server API key required depending on project. |
+| 3 | Automation pipeline | llama3.2:1b | Ollama generation | Intended model for scheduled project generation. |
+
+## Future Fields
+
+- model version
+- prompt type
+- generation time
+- output quality
+- failure reason
