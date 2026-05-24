@@ -1,10 +1,10 @@
 # Low-Token Chatbot Factory
 
-This repo now uses a low-token setup for repetitive chatbot generation.
+This repo uses a low-token setup for repetitive chatbot generation.
 
 ## What Runs Automatically
 
-GitHub Actions runs `.github/workflows/generate-chatbot.yml` once per hour. It installs Ollama on the runner, pulls a small local model, then calls:
+GitHub Actions runs `.github/workflows/generate-chatbot.yml` on schedule. It installs Ollama on the runner, pulls a small local model, then calls:
 
 ```bash
 python tools/chatbot_factory/generate.py
@@ -17,7 +17,7 @@ The generator creates a new project under `ai-chatbots/` and commits it back to 
 - Python templates create the repeated file structure.
 - Ollama generates small theme copy locally inside the GitHub Action.
 - If Ollama install or model pull fails, the generator falls back to built-in template copy.
-- Codex/ChatGPT should be saved for bugs, architecture, biotech logic, optimization, and review.
+- Manual review can be saved for bugs, architecture, biotech logic, optimization, and top project polish.
 
 ## Ollama Defaults
 
