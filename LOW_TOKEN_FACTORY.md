@@ -4,7 +4,7 @@ This repo now uses a low-token setup for repetitive chatbot generation.
 
 ## What Runs Automatically
 
-GitHub Actions runs `.github/workflows/generate-chatbot.yml` once per hour. It calls:
+GitHub Actions runs `.github/workflows/generate-chatbot.yml` once per hour. It installs Ollama on the runner, pulls a small local model, then calls:
 
 ```bash
 python tools/chatbot_factory/generate.py
@@ -15,24 +15,32 @@ The generator creates a new project under `ai-chatbots/` and commits it back to 
 ## Token Strategy
 
 - Python templates create the repeated file structure.
-- Built-in theme data creates browser demo replies without external tokens.
-- Optional Ollama support can generate small theme copy if you provide `OLLAMA_URL` and `OLLAMA_MODEL` secrets.
+- Ollama generates small theme copy locally inside the GitHub Action.
+- If Ollama install or model pull fails, the generator falls back to built-in template copy.
 - Codex/ChatGPT should be saved for bugs, architecture, biotech logic, optimization, and review.
 
-## Optional Ollama
+## Ollama Defaults
 
-GitHub-hosted runners cannot access your laptop's local Ollama server. To use Ollama in Actions, run a self-hosted GitHub runner on a machine where Ollama is available, or expose an Ollama endpoint carefully and store it as the `OLLAMA_URL` secret.
+The workflow uses `llama3.2:1b` by default because it is small enough for GitHub-hosted runners.
 
-If Ollama is unavailable, the generator still works using templates.
+You can manually run the workflow and choose another model, but larger models may be slow or fail on free GitHub runners.
 
 ## Manual Run
 
-Go to Actions -> Generate chatbot project -> Run workflow. You can optionally provide a theme slug such as:
+Go to Actions -> Generate chatbot project -> Run workflow. You can optionally provide:
 
-- `robot-gardener`
-- `startup-coach`
-- `biotech-notes`
-- `game-master`
+- theme slug, such as `robot-gardener`, `startup-coach`, `biotech-notes`, or `game-master`
+- Ollama model, such as `llama3.2:1b`
+
+## Local Run
+
+If you have Ollama installed locally:
+
+```bash
+OLLAMA_URL=http://localhost:11434 OLLAMA_MODEL=llama3.2:1b python tools/chatbot_factory/generate.py
+```
+
+Without Ollama, the script still works using templates.
 
 ## Output
 
