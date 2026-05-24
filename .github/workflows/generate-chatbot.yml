@@ -61,10 +61,32 @@ jobs:
           CHATBOT_THEME: ${{ inputs.theme }}
           OLLAMA_URL: http://127.0.0.1:11434
           OLLAMA_MODEL: ${{ inputs.model || 'llama3.2:1b' }}
-        run: python tools/chatbot_factory/generate.py
+        run: |
+          python tools/chatbot_factory/generate.py | tee generated-chatbot.txt
+          echo "CHATBOT_PATH=$(sed -n 's/^Created //p; s/^Generated //p' generated-chatbot.txt | tail -n 1)" >> "$GITHUB_ENV"
 
       - name: Commit generated project
+        id: auto_commit
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: Add generated chatbot project
           file_pattern: ai-chatbots/**
+
+      - name: Email chatbot notification
+        if: steps.auto_commit.outputs.changes_detected == 'true' && secrets.MAIL_USERNAME != '' && secrets.MAIL_PASSWORD != ''
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.MAIL_SERVER || 'smtp.gmail.com' }}
+          server_port: ${{ secrets.MAIL_PORT || '465' }}
+          secure: true
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: New AI chatbot created
+          to: torrickytan@gmail.com
+          from: ${{ secrets.MAIL_FROM || secrets.MAIL_USERNAME }}
+          body: |
+            A new chatbot project was created.
+
+            Project path: ${{ env.CHATBOT_PATH }}
+            Repository: https://github.com/meenavignesh-svg/ai-chat-bots-per-minute
+            Commit: https://github.com/meenavignesh-svg/ai-chat-bots-per-minute/commit/${{ steps.auto_commit.outputs.commit_hash }}
