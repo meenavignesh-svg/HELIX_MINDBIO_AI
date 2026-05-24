@@ -6,6 +6,13 @@ const statusEl = document.querySelector('#status');
 
 const history = [];
 
+const demoReplies = [
+  { match: ['itinerary', 'plan'], text: 'Demo mode: split the day into one main attraction, one relaxed meal, one flexible stop, and a simple way back.' },
+  { match: ['pack', 'packing'], text: 'Demo mode: pack by layers: documents, clothes, chargers, medicines, hygiene, and one comfort item.' },
+  { match: ['budget', 'cost'], text: 'Demo mode: separate transport, stay, food, tickets, local travel, and buffer money. The buffer saves the trip.' },
+  { match: ['compare', 'destination'], text: 'Demo mode: compare weather, travel time, cost, safety, activities, and how tired you want to be.' }
+];
+
 function addMessage(text, sender, extraClass = '') {
   const bubble = document.createElement('div');
   bubble.className = `message ${sender} ${extraClass}`.trim();
@@ -17,8 +24,15 @@ function addMessage(text, sender, extraClass = '') {
 function setBusy(isBusy) {
   button.disabled = isBusy;
   input.disabled = isBusy;
-  statusEl.textContent = isBusy ? 'planning' : 'online';
+  statusEl.textContent = isBusy ? 'planning' : 'demo ready';
   statusEl.classList.toggle('busy', isBusy);
+}
+
+function getDemoReply(text) {
+  const clean = text.toLowerCase();
+  const hit = demoReplies.find((reply) => reply.match.some((word) => clean.includes(word)));
+  if (hit) return hit.text;
+  return `Demo mode: I would turn "${text}" into a travel plan by asking dates, budget, pace, and must-see priorities.`;
 }
 
 async function sendMessage(text) {
@@ -32,16 +46,17 @@ async function sendMessage(text) {
       body: JSON.stringify({ messages: history })
     });
 
+    if (!response.ok) throw new Error('Demo fallback');
     const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || 'Request failed.');
-    }
-
-    history.push({ role: 'assistant', content: data.reply });
-    addMessage(data.reply, 'bot');
-  } catch (error) {
-    addMessage(error.message, 'bot', 'error');
+    const reply = data.reply || getDemoReply(text);
+    history.push({ role: 'assistant', content: reply });
+    addMessage(reply, 'bot');
+  } catch {
+    window.setTimeout(() => {
+      const reply = getDemoReply(text);
+      history.push({ role: 'assistant', content: reply });
+      addMessage(reply, 'bot');
+    }, 250);
   } finally {
     setBusy(false);
     input.focus();
@@ -58,4 +73,5 @@ form.addEventListener('submit', (event) => {
   sendMessage(text);
 });
 
-addMessage('Travel Planner is ready. Ask for an itinerary, packing list, budget plan, or destination comparison.', 'bot');
+statusEl.textContent = 'demo ready';
+addMessage('Travel Planner is ready in browser demo mode. Ask for an itinerary, packing list, budget plan, or destination comparison.', 'bot');
