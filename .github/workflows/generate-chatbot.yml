@@ -26,9 +26,6 @@ jobs:
   generate:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    env:
-      MAIL_USERNAME_SET: ${{ secrets.MAIL_USERNAME != '' }}
-      MAIL_PASSWORD_SET: ${{ secrets.MAIL_PASSWORD != '' }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -76,20 +73,47 @@ jobs:
           file_pattern: ai-chatbots/**
 
       - name: Email chatbot notification
-        if: steps.auto_commit.outputs.changes_detected == 'true' && env.MAIL_USERNAME_SET == 'true' && env.MAIL_PASSWORD_SET == 'true'
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: ${{ secrets.MAIL_SERVER || 'smtp.gmail.com' }}
-          server_port: ${{ secrets.MAIL_PORT || '465' }}
-          secure: true
-          username: ${{ secrets.MAIL_USERNAME }}
-          password: ${{ secrets.MAIL_PASSWORD }}
-          subject: New AI chatbot created
-          to: torrickytan@gmail.com
-          from: ${{ secrets.MAIL_FROM || secrets.MAIL_USERNAME }}
-          body: |
-            A new chatbot project was created.
+        if: steps.auto_commit.outputs.changes_detected == 'true'
+        env:
+          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          MAIL_SERVER: ${{ secrets.MAIL_SERVER || 'smtp.gmail.com' }}
+          MAIL_PORT: ${{ secrets.MAIL_PORT || '465' }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          CHATBOT_PATH: ${{ env.CHATBOT_PATH }}
+          COMMIT_HASH: ${{ steps.auto_commit.outputs.commit_hash }}
+        run: |
+          python - <<'PY'
+          import os
+          import smtplib
+          from email.message import EmailMessage
 
-            Project path: ${{ env.CHATBOT_PATH }}
-            Repository: https://github.com/meenavignesh-svg/ai-chat-bots-per-minute
-            Commit: https://github.com/meenavignesh-svg/ai-chat-bots-per-minute/commit/${{ steps.auto_commit.outputs.commit_hash }}
+          username = os.environ.get('MAIL_USERNAME', '').strip()
+          password = os.environ.get('MAIL_PASSWORD', '').strip()
+          if not username or not password:
+              print('Mail secrets are missing; skipping email notification.')
+              raise SystemExit(0)
+
+          server = os.environ.get('MAIL_SERVER', 'smtp.gmail.com').strip() or 'smtp.gmail.com'
+          port = int(os.environ.get('MAIL_PORT', '465') or '465')
+          sender = os.environ.get('MAIL_FROM', '').strip() or username
+          chatbot_path = os.environ.get('CHATBOT_PATH', '').strip() or 'ai-chatbots/'
+          commit_hash = os.environ.get('COMMIT_HASH', '').strip()
+          commit_url = f'https://github.com/meenavignesh-svg/ai-chat-bots-per-minute/commit/{commit_hash}' if commit_hash else 'https://github.com/meenavignesh-svg/ai-chat-bots-per-minute'
+
+          msg = EmailMessage()
+          msg['Subject'] = 'New AI chatbot created'
+          msg['From'] = sender
+          msg['To'] = 'torrickytan@gmail.com'
+          msg.set_content(
+              'A new chatbot project was created.\n\n'
+              f'Project path: {chatbot_path}\n'
+              'Repository: https://github.com/meenavignesh-svg/ai-chat-bots-per-minute\n'
+              f'Commit: {commit_url}\n'
+          )
+
+          with smtplib.SMTP_SSL(server, port) as smtp:
+              smtp.login(username, password)
+              smtp.send_message(msg)
+          print('Email notification sent.')
+          PY
