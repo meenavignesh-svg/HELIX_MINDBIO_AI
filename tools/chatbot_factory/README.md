@@ -1,23 +1,45 @@
 # Chatbot Factory Tool
 
-`generate.py` creates one new chatbot project with browser demo mode and optional Vercel real AI mode.
+`generate.py` creates one new chatbot project with browser demo mode.
 
-## GitHub Actions
+## Scheduled Workflow
 
-The scheduled workflow installs Ollama, pulls `llama3.2:1b`, verifies the model response, and runs this generator. Ollama is mandatory for scheduled generation; if Ollama fails, the workflow fails.
+The scheduled workflow runs the generator and commits the new chatbot project. New projects should also be reflected in the archive catalog and tracking files.
+
+## Archive Updates Expected
+
+For every generated chatbot, update:
+
+- root `README.md`
+- `CHATBOT_CATALOG.md`
+- relevant research-area README
+- `tracking/successful-projects.md`
+- `tracking/model-usage.md`
+- `tracking/response-quality.md`
+- `tracking/benchmarks.md`
+- `tracking/deployment-links.md`
+- `screenshots/README.md`
+
+## Test Expected
+
+Each chatbot should be checked for:
+
+- valid `public/index.html`
+- linked `public/style.css`
+- linked `public/script.js`
+- visible chat form
+- built-in demo replies without setup
 
 ## Run Locally
 
-From the repository root with Ollama:
+From the repository root:
 
 ```bash
-ollama serve
-ollama pull llama3.2:1b
-OLLAMA_URL=http://localhost:11434 OLLAMA_MODEL=llama3.2:1b python tools/chatbot_factory/generate.py
+python tools/chatbot_factory/generate.py
 ```
 
 Optional theme:
 
 ```bash
-CHATBOT_THEME=biotech-notes OLLAMA_URL=http://localhost:11434 OLLAMA_MODEL=llama3.2:1b python tools/chatbot_factory/generate.py
+CHATBOT_THEME=biotech-notes python tools/chatbot_factory/generate.py
 ```
