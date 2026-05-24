@@ -1,0 +1,43 @@
+name: Generate chatbot project
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+    inputs:
+      theme:
+        description: Optional theme slug, for example robot-gardener or biotech-notes
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: chatbot-generator
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Generate chatbot
+        env:
+          CHATBOT_THEME: ${{ inputs.theme }}
+          OLLAMA_URL: ${{ secrets.OLLAMA_URL }}
+          OLLAMA_MODEL: ${{ secrets.OLLAMA_MODEL }}
+        run: python tools/chatbot_factory/generate.py
+
+      - name: Commit generated project
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Add generated chatbot project
+          file_pattern: ai-chatbots/**
