@@ -39,35 +39,33 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install Ollama
+      - name: Install and start Ollama
         run: |
           curl -fsSL https://ollama.com/install.sh | sh
           ollama serve > /tmp/ollama.log 2>&1 &
-          for i in {1..30}; do
+          for i in {1..60}; do
             if curl -fsS http://127.0.0.1:11434/api/tags >/dev/null; then
-              echo "OLLAMA_READY=true" >> "$GITHUB_ENV"
               exit 0
             fi
             sleep 1
           done
-          echo "OLLAMA_READY=false" >> "$GITHUB_ENV"
-          echo "Ollama did not become ready; generator will fall back to templates."
-        continue-on-error: true
+          echo "Ollama did not become ready."
+          cat /tmp/ollama.log || true
+          exit 1
 
       - name: Pull small Ollama model
-        if: env.OLLAMA_READY == 'true'
         env:
           OLLAMA_MODEL_INPUT: ${{ inputs.model }}
         run: |
           MODEL="${OLLAMA_MODEL_INPUT:-llama3.2:1b}"
           ollama pull "$MODEL"
-        continue-on-error: true
 
-      - name: Generate chatbot
+      - name: Generate chatbot with Ollama
         env:
           CHATBOT_THEME: ${{ inputs.theme }}
-          OLLAMA_URL: ${{ env.OLLAMA_READY == 'true' && 'http://127.0.0.1:11434' || '' }}
+          OLLAMA_URL: http://127.0.0.1:11434
           OLLAMA_MODEL: ${{ inputs.model || 'llama3.2:1b' }}
+          REQUIRE_OLLAMA: 'true'
         run: |
           python tools/chatbot_factory/generate.py | tee generated-chatbot.txt
           echo "CHATBOT_PATH=$(sed -n 's/^Created //p; s/^Generated //p' generated-chatbot.txt | tail -n 1)" >> "$GITHUB_ENV"
