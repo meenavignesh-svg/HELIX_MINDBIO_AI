@@ -1,0 +1,18 @@
+# Successful Projects
+
+| S.No | Project | Date | Reason Marked Successful |
+| ---: | --- | --- | --- |
+| 1 | Moon Cafe | 2026-05-24 | Browser demo works |
+| 2 | Pirate Map | 2026-05-24 | Browser demo works |
+| 3 | Lab Mentor | 2026-05-24 | Browser demo and backend option available |
+| 4 | Ocean Medic | 2026-05-24 | Browser demo and backend option available |
+| 5 | Museum Guide | 2026-05-24 | Browser demo and backend option available |
+| 6 | Travel Planner | 2026-05-24 | Browser demo and backend option available |
+| 7 | Forest Ranger | 2026-05-24 | Browser demo and backend option available |
+| 8 | City Chef | 2026-05-24 | Browser demo and backend option available |
+| 9 | Study Buddy | 2026-05-24 | Browser demo and backend option available |
+| 10 | Fitness Coach | 2026-05-24 | Browser demo and backend option available |
+| 11 | Budget Mentor | 2026-05-24 | Browser demo and optional Vercel AI mode available |
+| 12 | Beat Producer | 2026-05-24 | Browser demo and optional Vercel AI mode available |
+| 13 | Robot Gardener | 2026-05-24 | Browser demo and optional Vercel AI mode available |
+| 14 | Startup Coach | 2026-05-24 | Browser demo and optional Vercel AI mode available |
