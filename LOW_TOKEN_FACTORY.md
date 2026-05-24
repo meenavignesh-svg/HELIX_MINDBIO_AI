@@ -4,7 +4,7 @@ This repo uses a low-token setup for repetitive chatbot generation.
 
 ## What Runs Automatically
 
-GitHub Actions runs `.github/workflows/generate-chatbot.yml` on schedule. It installs Ollama on the runner, pulls a small local model, then calls:
+GitHub Actions runs `.github/workflows/generate-chatbot.yml` on schedule. It installs Ollama on the runner, pulls a small local model, verifies the model can return usable chatbot JSON, then calls:
 
 ```bash
 python tools/chatbot_factory/generate.py
@@ -32,8 +32,8 @@ Without `MAIL_USERNAME` and `MAIL_PASSWORD`, chatbot generation still works but 
 ## Token Strategy
 
 - Python templates create the repeated file structure.
-- Ollama generates small theme copy locally inside the GitHub Action.
-- If Ollama install or model pull fails, the generator falls back to built-in template copy.
+- Ollama is mandatory for scheduled generation.
+- If Ollama install, model pull, or response verification fails, the workflow fails instead of making a template-only chatbot.
 - Manual review can be saved for bugs, architecture, biotech logic, optimization, and top project polish.
 
 ## Ollama Defaults
@@ -54,10 +54,10 @@ Go to Actions -> Generate chatbot project -> Run workflow. You can optionally pr
 If you have Ollama installed locally:
 
 ```bash
+ollama serve
+ollama pull llama3.2:1b
 OLLAMA_URL=http://localhost:11434 OLLAMA_MODEL=llama3.2:1b python tools/chatbot_factory/generate.py
 ```
-
-Without Ollama, the script still works using templates.
 
 ## Output
 
