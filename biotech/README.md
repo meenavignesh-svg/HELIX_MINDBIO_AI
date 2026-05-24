@@ -1,0 +1,18 @@
+# Biotech
+
+Biotech-focused chatbot and study-agent experiments.
+
+## Focus
+
+- biotech study support
+- lab-note organization
+- glossary explanation
+- safe high-level research planning
+
+## Current Experiments
+
+- Lab Mentor
+
+## Tags
+
+`biotech`, `education`, `lab-notes`, `research-assistant`
