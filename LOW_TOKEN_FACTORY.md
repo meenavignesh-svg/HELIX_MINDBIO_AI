@@ -12,6 +12,23 @@ python tools/chatbot_factory/generate.py
 
 The generator creates a new project under `ai-chatbots/` and commits it back to the repo.
 
+## Email Notifications
+
+The workflow can email `torrickytan@gmail.com` whenever a new chatbot is committed.
+
+Add these GitHub repository secrets in Settings -> Secrets and variables -> Actions:
+
+- `MAIL_USERNAME` - SMTP username, usually your Gmail address
+- `MAIL_PASSWORD` - SMTP password or Gmail app password
+
+Optional secrets:
+
+- `MAIL_SERVER` - defaults to `smtp.gmail.com`
+- `MAIL_PORT` - defaults to `465`
+- `MAIL_FROM` - defaults to `MAIL_USERNAME`
+
+Without `MAIL_USERNAME` and `MAIL_PASSWORD`, chatbot generation still works but email is skipped.
+
 ## Token Strategy
 
 - Python templates create the repeated file structure.
