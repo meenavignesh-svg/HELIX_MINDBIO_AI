@@ -6,3 +6,4 @@
 | 2 | ClaimGuard AI Revenue Integrity Copilot | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/claimguard-revenue-integrity-copilot-2026-05-26-163320z/ | GitHub Pages demo |
 | 3 | BioSignal AI Paper-to-Decision Analyst | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/biosignal-paper-decision-analyst-2026-05-26-163716z/ | GitHub Pages demo |
 | 4 | BioSignal AI Paper-to-Decision Analyst | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/biosignal-paper-decision-analyst-2026-05-26-164535z/ | GitHub Pages demo |
+| 5 | MasteryMap AI Learning Diagnostic Studio | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/masterymap-learning-diagnostic-studio-2026-05-26-165707z/ | GitHub Pages demo |
