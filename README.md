@@ -2,7 +2,7 @@
 
 This repository is a clean automation archive for building **two serious premium AI chatbot products per day**.
 
-The goal is quality, not volume. Old low-value generated demos were removed. New projects must look and feel like products that could become paid tools.
+The goal is quality, not volume. New projects must look and feel like products that could become paid tools.
 
 ## Automation Standard
 
@@ -38,13 +38,27 @@ Manual runs are also available from GitHub Actions.
 | `ai-chatbots/` | Generated premium AI chatbot products |
 | `docs/` | GitHub Pages browser demos |
 | `tools/chatbot_factory/` | Product generator and validator |
-| `tracking/` | Success, deployment, model, and quality logs |
+| `tracking/` | Success, deployment, model, quality, and metrics logs |
 | `.github/workflows/` | Automation workflows |
+
+## Flagship Direction
+
+The archive is focused on five flagship product families:
+
+| Product Family | Commercial Angle |
+| --- | --- |
+| Medical coding AI | Revenue integrity and claim review |
+| Biotech research AI | Paper triage and diligence workflows |
+| RAG QA AI | Source-grounded answer auditing |
+| Automation AI | Operations workflow risk analysis |
+| Local LLM AI | Private model evaluation and benchmarking |
 
 ## Premium Product Catalog
 
 | S.No | Product | Made On (UTC) | Category | Folder | Value | Demo |
 | ---: | --- | --- | --- | --- | --- | --- |
+| 1 | SourceProof AI RAG Answer Auditor | 2026-05-26 16:31 UTC | RAG | `ai-chatbots/sourceproof-rag-answer-auditor-2026-05-26-163112z` | $2,000/month RAG QA suite | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/sourceproof-rag-answer-auditor-2026-05-26-163112z/ |
+| 2 | ClaimGuard AI Revenue Integrity Copilot | 2026-05-26 16:33 UTC | Medical Coding | `ai-chatbots/claimguard-revenue-integrity-copilot-2026-05-26-163320z` | $1,200/month clinic pilot | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/claimguard-revenue-integrity-copilot-2026-05-26-163320z/ |
 
 ## Required Secrets
 
@@ -77,5 +91,3 @@ https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/
 ## Quality Rule
 
 If a generated product does not meet the premium standard, the workflow must fail and commit nothing.
-| 3 | SourceProof AI RAG Answer Auditor | 2026-05-26 16:31 UTC | RAG | `ai-chatbots/sourceproof-rag-answer-auditor-2026-05-26-163112z` | $2,000/month RAG QA suite | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/sourceproof-rag-answer-auditor-2026-05-26-163112z/ |
-| 4 | ClaimGuard AI Revenue Integrity Copilot | 2026-05-26 16:33 UTC | Medical Coding | `ai-chatbots/claimguard-revenue-integrity-copilot-2026-05-26-163320z` | $1,200/month clinic pilot | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/claimguard-revenue-integrity-copilot-2026-05-26-163320z/ |
