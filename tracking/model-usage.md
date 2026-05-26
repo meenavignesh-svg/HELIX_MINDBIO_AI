@@ -12,3 +12,4 @@
 | 8 | SourceProof AI RAG Answer Auditor | OpenAI + Gemini if available | quality-first generation |
 | 9 | ModelBench AI Local LLM Evaluation Console | OpenAI + Gemini if available | quality-first generation |
 | 10 | MasteryMap AI Learning Diagnostic Studio | OpenAI + Gemini if available | quality-first generation |
+| 11 | MasteryMap AI Learning Diagnostic Studio | OpenAI + Gemini if available | quality-first generation |
