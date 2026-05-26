@@ -15,6 +15,7 @@ A project must include:
 - `OPENAI_API_KEY` kept on the server when deployed
 - visitor API-key support through browser `sessionStorage`
 - README, package, Vercel config, API route, and public UI files
+- unique layout metadata, unique palette metadata, screenshot asset, and live-demo files
 
 ## Behavior
 
@@ -32,3 +33,5 @@ A project must include:
 python tools/chatbot_factory/generate.py
 python tools/chatbot_factory/validate_premium.py generated-chatbot.txt
 ```
+
+Last manual trigger note: premium workflow requested.
