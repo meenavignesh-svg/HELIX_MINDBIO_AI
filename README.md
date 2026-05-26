@@ -43,6 +43,8 @@ For Gmail, `MAIL_PASSWORD` should be a Gmail App Password, not the normal Gmail 
 
 | S.No | Chatbot | Made On (UTC) | Category | Folder | Status | Model | Deployment |
 | ---: | --- | --- | --- | --- | --- | --- | --- |
+| 1 | Education Builder Daily Brief | 2026-05-26 15:41 UTC | Education | `ai-chatbots/learn-builder-brief-chatbot-2026-05-26-154115z` | Successful demo with visual cover | Browser demo + Vercel/OpenAI-ready | Not deployed |
+| 2 | Biotech Evidence Navigator | 2026-05-26 15:43 UTC | Biotech | `ai-chatbots/biotech-evidence-navigator-chatbot-2026-05-26-154302z` | Successful demo with visual cover | Browser demo + Vercel/OpenAI-ready | Not deployed |
 
 ## Project Standard
 
@@ -64,4 +66,3 @@ Each generated chatbot includes:
 - Failed experiments: `tracking/failed-experiments.md`
 - Model usage: `tracking/model-usage.md`
 - Deployment links: `tracking/deployment-links.md`
-| 1 | Education Builder Daily Brief | 2026-05-26 15:41 UTC | Education | `ai-chatbots/learn-builder-brief-chatbot-2026-05-26-154115z` | Successful demo with visual cover | Browser demo + Vercel/OpenAI-ready | Not deployed |
