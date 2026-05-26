@@ -45,6 +45,8 @@ For Gmail, `MAIL_PASSWORD` should be a Gmail App Password, not the normal Gmail 
 | ---: | --- | --- | --- | --- | --- | --- | --- |
 | 1 | Education Builder Daily Brief | 2026-05-26 15:41 UTC | Education | `ai-chatbots/learn-builder-brief-chatbot-2026-05-26-154115z` | Successful demo with visual cover | Browser demo + Vercel/OpenAI-ready | Not deployed |
 | 2 | Biotech Evidence Navigator | 2026-05-26 15:43 UTC | Biotech | `ai-chatbots/biotech-evidence-navigator-chatbot-2026-05-26-154302z` | Successful demo with visual cover | Browser demo + Vercel/OpenAI-ready | Not deployed |
+| 3 | Voice Agents Builder Idea Sprint | 2026-05-26 15:46 UTC | Voice Agents | `ai-chatbots/voice-builder-sprint-chatbot-2026-05-26-154639z` | Successful demo with visual cover | Browser demo + Vercel/OpenAI-ready | Not deployed |
+| 4 | RAG Analyst Decision Helper | 2026-05-26 15:47 UTC | RAG | `ai-chatbots/rag-analyst-decision-chatbot-2026-05-26-154709z` | Successful demo with visual cover | Browser demo + Vercel/OpenAI-ready | Not deployed |
 
 ## Project Standard
 
@@ -66,4 +68,3 @@ Each generated chatbot includes:
 - Failed experiments: `tracking/failed-experiments.md`
 - Model usage: `tracking/model-usage.md`
 - Deployment links: `tracking/deployment-links.md`
-| 3 | Voice Agents Builder Idea Sprint | 2026-05-26 15:46 UTC | Voice Agents | `ai-chatbots/voice-builder-sprint-chatbot-2026-05-26-154639z` | Successful demo with visual cover | Browser demo + Vercel/OpenAI-ready | Not deployed |
