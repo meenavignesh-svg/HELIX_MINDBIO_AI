@@ -68,6 +68,7 @@ The archive is focused on five flagship product families:
 | 9 | ModelBench AI Local LLM Evaluation Console | 2026-05-26 19:28 UTC | Local LLM | `ai-chatbots/modelbench-local-llm-evaluation-console-2026-05-26-192800z` | $1,250/month private AI evaluation lab | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/modelbench-local-llm-evaluation-console-2026-05-26-192800z/ |
 | 10 | MasteryMap AI Learning Diagnostic Studio | 2026-05-26 21:10 UTC | Education | `ai-chatbots/masterymap-learning-diagnostic-studio-2026-05-26-211046z` | $1,000/month tutoring product add-on | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/masterymap-learning-diagnostic-studio-2026-05-26-211046z/ |
 | 11 | MasteryMap AI Learning Diagnostic Studio | 2026-05-26 22:38 UTC | Education | `ai-chatbots/masterymap-learning-diagnostic-studio-2026-05-26-223857z` | $1,000/month tutoring product add-on | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/masterymap-learning-diagnostic-studio-2026-05-26-223857z/ |
+| 12 | ClaimGuard AI Revenue Integrity Copilot | 2026-05-26 23:46 UTC | Medical Coding | `ai-chatbots/claimguard-revenue-integrity-copilot-2026-05-26-234642z` | $1,200/month clinic pilot | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/claimguard-revenue-integrity-copilot-2026-05-26-234642z/ |
 
 ## Required Secrets
 

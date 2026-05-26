@@ -13,3 +13,4 @@
 | 9 | ModelBench AI Local LLM Evaluation Console | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/modelbench-local-llm-evaluation-console-2026-05-26-192800z/ | GitHub Pages demo |
 | 10 | MasteryMap AI Learning Diagnostic Studio | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/masterymap-learning-diagnostic-studio-2026-05-26-211046z/ | GitHub Pages demo |
 | 11 | MasteryMap AI Learning Diagnostic Studio | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/masterymap-learning-diagnostic-studio-2026-05-26-223857z/ | GitHub Pages demo |
+| 12 | ClaimGuard AI Revenue Integrity Copilot | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/claimguard-revenue-integrity-copilot-2026-05-26-234642z/ | GitHub Pages demo |
