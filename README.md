@@ -66,3 +66,4 @@ Each generated chatbot includes:
 - Failed experiments: `tracking/failed-experiments.md`
 - Model usage: `tracking/model-usage.md`
 - Deployment links: `tracking/deployment-links.md`
+| 3 | Voice Agents Builder Idea Sprint | 2026-05-26 15:46 UTC | Voice Agents | `ai-chatbots/voice-builder-sprint-chatbot-2026-05-26-154639z` | Successful demo with visual cover | Browser demo + Vercel/OpenAI-ready | Not deployed |
