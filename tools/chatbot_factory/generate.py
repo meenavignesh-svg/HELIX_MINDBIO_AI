@@ -1,18 +1,20 @@
 #!/usr/bin/env python3
 """Generate one fresh browser-demo chatbot and update repo indexes.
 
-The idea engine creates new concepts from domain, role, and job parts, then
-skips any slug already present in README.md. This keeps the automation moving
-without needing paid model tokens for every idea.
+If OPENAI_API_KEY or GEMINI_API_KEY is available, the generator asks an AI model
+for a new chatbot concept. If not, it falls back to a local idea engine.
 """
 
 from __future__ import annotations
 
 import hashlib
 import json
+import os
 import random
 import re
 import textwrap
+import urllib.error
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -71,7 +73,7 @@ def read(path: str) -> str:
 
 
 def slugify(value: str) -> str:
-    return re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
+    return re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")[:54] or "chatbot"
 
 
 def used_slugs() -> set[str]:
@@ -84,34 +86,129 @@ def next_number(text: str) -> int:
 
 
 def append_row(path: str, row: str) -> None:
-    file = ROOT / path
-    write(file, read(path).rstrip() + "\n" + row)
+    write(ROOT / path, read(path).rstrip() + "\n" + row)
 
 
-def all_ideas() -> list[dict[str, str]]:
+def palette_for(slug: str) -> tuple[str, str]:
+    digest = hashlib.sha1(slug.encode("utf-8")).hexdigest()
+    return PALETTES[int(digest[:2], 16) % len(PALETTES)]
+
+
+def http_json(url: str, headers: dict[str, str], body: dict) -> dict | None:
+    request = urllib.request.Request(
+        url,
+        data=json.dumps(body).encode("utf-8"),
+        headers={"Content-Type": "application/json", **headers},
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=35) as response:
+            return json.loads(response.read().decode("utf-8"))
+    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError):
+        return None
+
+
+def extract_json(text: str) -> dict | None:
+    start = text.find("{")
+    end = text.rfind("}") + 1
+    if start < 0 or end <= start:
+        return None
+    try:
+        return json.loads(text[start:end])
+    except json.JSONDecodeError:
+        return None
+
+
+def openai_text(data: dict) -> str:
+    if isinstance(data.get("output_text"), str):
+        return data["output_text"]
+    chunks = []
+    for item in data.get("output", []):
+        for content in item.get("content", []):
+            if isinstance(content.get("text"), str):
+                chunks.append(content["text"])
+    return "\n".join(chunks)
+
+
+def ai_prompt(used: set[str]) -> str:
+    return (
+        "Invent one production-worthy web chatbot concept for an experimental AI chatbot archive. "
+        "Return only compact JSON with keys: title, category, focus, demo_reply. "
+        "The title must be specific and useful, not generic. Category must be one of: Healthcare, Biotech, "
+        "Education, Automation, Productivity, Medical Coding, Local LLM, RAG, Voice Agents. "
+        "Avoid these used slugs: " + ", ".join(sorted(used)[-80:])
+    )
+
+
+def ask_openai(used: set[str]) -> dict | None:
+    api_key = os.environ.get("OPENAI_API_KEY", "").strip()
+    if not api_key:
+        return None
+    model = os.environ.get("OPENAI_MODEL", "").strip() or "gpt-4.1-mini"
+    data = http_json(
+        "https://api.openai.com/v1/responses",
+        {"Authorization": f"Bearer {api_key}"},
+        {"model": model, "input": ai_prompt(used)},
+    )
+    return extract_json(openai_text(data or {})) if data else None
+
+
+def ask_gemini(used: set[str]) -> dict | None:
+    api_key = os.environ.get("GEMINI_API_KEY", "").strip()
+    if not api_key:
+        return None
+    model = os.environ.get("GEMINI_MODEL", "").strip() or "gemini-1.5-flash"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
+    data = http_json(url, {}, {"contents": [{"parts": [{"text": ai_prompt(used)}]}]})
+    try:
+        text = data["candidates"][0]["content"]["parts"][0]["text"]
+    except (TypeError, KeyError, IndexError):
+        return None
+    return extract_json(text)
+
+
+def normalize_ai_theme(raw: dict | None, used: set[str]) -> dict[str, str] | None:
+    if not raw:
+        return None
+    title = str(raw.get("title", "")).strip()[:70]
+    category = str(raw.get("category", "Productivity")).strip()[:40]
+    focus = str(raw.get("focus", "helpful planning and practical answers")).strip()[:220]
+    demo = str(raw.get("demo_reply", "Ask a specific question and I will suggest a useful next step.")).strip()[:260]
+    if not title:
+        return None
+    slug = slugify(title)
+    if slug in used:
+        slug = slugify(f"{title}-{datetime.now(timezone.utc).strftime('%H%M%S')}")
+    accent, accent2 = palette_for(slug)
+    return {"slug": slug, "title": title, "category": category, "focus": focus, "demo": demo, "accent": accent, "accent2": accent2, "source": "AI idea engine"}
+
+
+def local_ideas() -> list[dict[str, str]]:
     ideas = []
     for domain, domain_slug, domain_focus in DOMAINS:
         for role, role_slug, role_style in ROLES:
             for job, job_slug, job_focus in JOBS:
                 slug = f"{domain_slug}-{role_slug}-{job_slug}"
-                title = f"{domain} {role} {job}"
-                focus = f"{domain_focus}; {job_focus}; {role_style}"
-                digest = hashlib.sha1(slug.encode("utf-8")).hexdigest()
-                accent, accent2 = PALETTES[int(digest[:2], 16) % len(PALETTES)]
+                accent, accent2 = palette_for(slug)
                 ideas.append({
                     "slug": slug,
-                    "title": title,
+                    "title": f"{domain} {role} {job}",
                     "category": domain,
-                    "focus": focus,
+                    "focus": f"{domain_focus}; {job_focus}; {role_style}",
+                    "demo": f"I can help with {domain_focus}, especially by helping you {job_focus}.",
                     "accent": accent,
                     "accent2": accent2,
+                    "source": "local idea engine",
                 })
     return ideas
 
 
 def pick_theme() -> dict[str, str]:
     used = used_slugs()
-    available = [idea for idea in all_ideas() if idea["slug"] not in used]
+    ai_theme = normalize_ai_theme(ask_openai(used), used) or normalize_ai_theme(ask_gemini(used), used)
+    if ai_theme:
+        return ai_theme
+    available = [idea for idea in local_ideas() if idea["slug"] not in used]
     if not available:
         raise SystemExit("No unused idea combinations left. Add more idea parts before running again.")
     random.seed(datetime.now(timezone.utc).isoformat())
@@ -124,6 +221,7 @@ def build() -> str:
     title = theme["title"]
     category = theme["category"]
     focus = theme["focus"]
+    demo = theme["demo"]
     accent = theme["accent"]
     accent2 = theme["accent2"]
 
@@ -132,9 +230,7 @@ def build() -> str:
     made = now.strftime("%Y-%m-%d %H:%M UTC")
     folder = OUT / f"{slug}-chatbot-{stamp}"
     project_path = folder.relative_to(ROOT).as_posix()
-
     system = f"You are {title}, a concise practical chatbot for {focus}. Keep replies safe, clear, specific, and useful."
-    demo = f"Demo mode: I am {title}. I can help with {focus}. Ask one specific question and I will give a useful next step."
 
     write(folder / "README.md", f"""
     # {title}
@@ -147,7 +243,7 @@ def build() -> str:
 
     ## Optional Real AI Mode
 
-    Deploy this folder to Vercel, then enter an OpenAI API key in the browser UI. The key stays in `sessionStorage`.
+    Deploy this folder to Vercel and set `OPENAI_API_KEY`, or let visitors enter their own OpenAI API key in the browser UI. Browser-entered keys stay in `sessionStorage`.
 
     ## Folder
 
@@ -171,12 +267,13 @@ def build() -> str:
 
     export default async function handler(req, res) {{
       if (req.method !== 'POST') return res.status(405).json({{ error: 'Method not allowed.' }});
-      const apiKey = req.headers.authorization?.replace(/^Bearer\s+/i, '') || req.body?.apiKey;
+      const visitorKey = req.headers.authorization?.replace(/^Bearer\s+/i, '') || req.body?.apiKey;
+      const apiKey = process.env.OPENAI_API_KEY || visitorKey;
       if (!apiKey) return res.status(400).json({{ error: 'OpenAI API key required for real AI mode.' }});
       const messages = Array.isArray(req.body?.messages) ? req.body.messages.slice(-10) : [];
       const input = messages.map((m) => ({{ role: m.role === 'assistant' ? 'assistant' : 'user', content: String(m.content || '').slice(0, 2000) }}));
       const client = new OpenAI({{ apiKey }});
-      const response = await client.responses.create({{ model: 'gpt-4.1-mini', instructions: {json.dumps(system)}, input }});
+      const response = await client.responses.create({{ model: process.env.OPENAI_MODEL || 'gpt-4.1-mini', instructions: {json.dumps(system)}, input }});
       return res.status(200).json({{ reply: response.output_text || 'Please try again.' }});
     }}
     """)
@@ -281,7 +378,7 @@ def build() -> str:
     number = next_number(read("README.md"))
     append_row("README.md", f"| {number} | {title} | {made} | {category} | `{project_path}` | Successful demo | Browser demo + Vercel/OpenAI-ready | Not deployed |")
     append_row("tracking/successful-projects.md", f"| {number} | {title} | {made} | `{project_path}` | Browser demo created. |")
-    append_row("tracking/model-usage.md", f"| {number} | {title} | Browser rules | gpt-4.1-mini via visitor key | generated by automation pipeline idea engine |")
+    append_row("tracking/model-usage.md", f"| {number} | {title} | Browser rules | gpt-4.1-mini via server/visitor key | generated by {theme['source']} |")
     append_row("tracking/deployment-links.md", f"| {number} | {title} | `{project_path}` | Pending | Not deployed |")
     return project_path
 
