@@ -24,4 +24,4 @@ python tools/chatbot_factory/generate.py
 python tools/chatbot_factory/validate_premium.py generated-product.txt
 ```
 
-Manual trigger note: start the clean premium product pipeline.
+Manual trigger note: create one premium product now.
