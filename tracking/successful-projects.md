@@ -23,3 +23,4 @@
 - 2026-05-26 13:59 UTC: Biotech Notes - `ai-chatbots/biotech-notes-chatbot-2026-05-26-135959z` - browser demo created and smoke-checked.
 - 2026-05-26 14:01 UTC: Robot Gardener - `ai-chatbots/robot-gardener-chatbot-2026-05-26-140144z` - browser demo created and smoke-checked.
 - 2026-05-26 14:08 UTC: Game Master - `ai-chatbots/game-master-chatbot-2026-05-26-140827z` - browser demo created and smoke-checked.
+- 2026-05-26 14:14 UTC: Game Master - `ai-chatbots/game-master-chatbot-2026-05-26-141419z` - browser demo created and smoke-checked.
