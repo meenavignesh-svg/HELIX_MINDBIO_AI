@@ -6,7 +6,7 @@ on:
       - '.github/workflows/generate-chatbot.yml'
       - 'tools/chatbot_factory/**'
   schedule:
-    - cron: '*/10 * * * *'
+    - cron: '0 */4 * * *'
   workflow_dispatch:
     inputs:
       theme:
