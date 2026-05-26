@@ -10,3 +10,4 @@
 | 6 | Healthcare Planner Daily Brief | 2026-05-26 16:06 UTC | `ai-chatbots/care-planner-brief-chatbot-2026-05-26-160631z` | Premium Split Command Center chatbot with Ops Check, screenshot, and live demo path. |
 | 7 | Local LLM Coach Idea Sprint | 2026-05-26 16:07 UTC | `ai-chatbots/local-coach-sprint-chatbot-2026-05-26-160708z` | Premium Insight Deck chatbot with Practice Coach, screenshot, and live demo path. |
 | 8 | Local LLM Tutor Quality Check | 2026-05-26 16:07 UTC | `ai-chatbots/local-tutor-quality-chatbot-2026-05-26-160741z` | Premium Research Desk chatbot with Decision Lens, screenshot, and live demo path. |
+| 9 | RAG Builder Quality Check | 2026-05-26 16:09 UTC | `ai-chatbots/rag-builder-quality-chatbot-2026-05-26-160935z` | Premium Mission Console chatbot with Brief Builder, screenshot, and live demo path. |
