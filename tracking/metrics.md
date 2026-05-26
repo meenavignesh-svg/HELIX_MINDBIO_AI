@@ -2,11 +2,11 @@
 
 | Metric | Current Value | Notes |
 | --- | ---: | --- |
-| Premium products generated | 2 | Reset archive baseline |
-| Live demo paths created | 2 | GitHub Pages demos under `docs/` |
-| Product families covered | 2 | RAG, Medical Coding |
+| Premium products generated | 3 | Reset archive baseline |
+| Live demo paths created | 3 | GitHub Pages demos under `docs/` |
+| Product families covered | 3 | RAG, Medical Coding, Biotech |
 | Average quality score | 95/100 | Validator requires 90+ |
-| Price anchors >= $1000/month | 2 | All generated premium products |
+| Price anchors >= $1000/month | 3 | All generated premium products |
 | Failed premium validations | 0 | Track failures in `failed-experiments.md` |
 | Workflow cadence | 2/day | 00:30 UTC and 12:30 UTC |
 
@@ -16,7 +16,7 @@
 | --- | ---: |
 | RAG | 1 |
 | Medical Coding | 1 |
-| Biotech | 0 |
+| Biotech | 1 |
 | Automation | 0 |
 | Local LLM | 0 |
 | Education | 0 |
