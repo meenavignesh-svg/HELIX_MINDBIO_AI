@@ -1,6 +1,10 @@
 name: Generate chatbot project
 
 on:
+  push:
+    paths:
+      - '.github/workflows/generate-chatbot.yml'
+      - 'tools/chatbot_factory/**'
   schedule:
     - cron: '*/5 * * * *'
   workflow_dispatch:
