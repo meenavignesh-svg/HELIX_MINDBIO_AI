@@ -80,10 +80,13 @@ Optional:
 
 ## Pages
 
-For browser demos, enable GitHub Pages with either:
+Use one simple deployment path:
 
-- Source: **Deploy from a branch**, branch `main`, folder `/docs`, or
-- Source: **GitHub Actions** using the deploy workflow.
+- Source: **Deploy from a branch**
+- Branch: `main`
+- Folder: `/docs`
+
+Do not use the GitHub Actions Pages source for this repo. The generated chatbot demos are static files under `docs/`, so branch-based Pages is the most reliable option.
 
 Demo home:
 
