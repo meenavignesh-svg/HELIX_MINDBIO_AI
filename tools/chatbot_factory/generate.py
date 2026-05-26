@@ -1,8 +1,14 @@
 #!/usr/bin/env python3
-"""Generate one unique browser-demo chatbot and update repo indexes."""
+"""Generate one fresh browser-demo chatbot and update repo indexes.
+
+The idea engine creates new concepts from domain, role, and job parts, then
+skips any slug already present in README.md. This keeps the automation moving
+without needing paid model tokens for every idea.
+"""
 
 from __future__ import annotations
 
+import hashlib
 import json
 import random
 import re
@@ -13,19 +19,44 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "ai-chatbots"
 
-THEMES = [
-    ("clinic-triage", "Clinic Triage Helper", "Healthcare", "symptom notes, appointment prep, and safe care reminders", "#38bdf8", "#14b8a6"),
-    ("biotech-glossary", "Biotech Glossary Coach", "Biotech", "biotech terms, study prompts, and high-level experiment summaries", "#2dd4bf", "#f472b6"),
-    ("math-socratic", "Math Socratic Tutor", "Education", "guided math hints and step-by-step practice", "#facc15", "#60a5fa"),
-    ("workflow-planner", "Workflow Planner", "Automation", "task breakdowns, checklists, and automation ideas", "#a78bfa", "#34d399"),
-    ("focus-coach", "Focus Coach", "Productivity", "prioritization, time blocking, and gentle accountability", "#fb7185", "#fbbf24"),
-    ("coding-claims", "Medical Coding Tutor", "Medical Coding", "coding terminology practice and claim-review concepts", "#93c5fd", "#22c55e"),
-    ("local-model-lab", "Local Model Lab", "Local LLM", "local model testing prompts and result notes", "#c084fc", "#67e8f9"),
-    ("rag-librarian", "RAG Librarian", "RAG", "retrieval planning, source notes, and answer grounding", "#f97316", "#84cc16"),
-    ("voice-script", "Voice Agent Scriptwriter", "Voice Agents", "call flows, voice prompts, and conversation repair", "#e879f9", "#38bdf8"),
-    ("career-mentor", "Career Mentor", "Productivity", "portfolio ideas, interview prep, and skill planning", "#22c55e", "#818cf8"),
-    ("nutrition-planner", "Nutrition Planner", "Healthcare", "meal planning ideas and safe wellness prompts", "#fb923c", "#4ade80"),
-    ("lab-note-summarizer", "Lab Note Summarizer", "Biotech", "clear lab note summaries and study-safe explanations", "#06b6d4", "#f0abfc"),
+DOMAINS = [
+    ("Healthcare", "care", "safe wellness, symptom notes, appointment preparation"),
+    ("Biotech", "bio", "biotech terms, study notes, lab-summary thinking"),
+    ("Education", "learn", "teaching, quiz practice, and step-by-step explanations"),
+    ("Automation", "flow", "workflow planning, task breakdowns, and process checks"),
+    ("Productivity", "focus", "prioritization, planning, and personal systems"),
+    ("Medical Coding", "code", "coding terminology, claim review concepts, and practice prompts"),
+    ("Local LLM", "local", "local model testing, prompt trials, and result notes"),
+    ("RAG", "rag", "retrieval planning, source grounding, and answer checking"),
+    ("Voice Agents", "voice", "call flows, repair prompts, and spoken interaction design"),
+]
+
+ROLES = [
+    ("Navigator", "nav", "maps choices into a clear next step"),
+    ("Coach", "coach", "gives practical encouragement and structured action"),
+    ("Analyst", "analyst", "compares options and explains tradeoffs"),
+    ("Tutor", "tutor", "teaches with hints before answers"),
+    ("Planner", "planner", "turns messy goals into checklists"),
+    ("Reviewer", "reviewer", "checks quality, risks, and missing details"),
+    ("Builder", "builder", "creates simple drafts, templates, and plans"),
+    ("Scribe", "scribe", "summarizes notes into clean records"),
+]
+
+JOBS = [
+    ("Daily Brief", "brief", "create a compact daily briefing with risks, actions, and open questions"),
+    ("Decision Helper", "decision", "help choose between options using simple criteria"),
+    ("Practice Lab", "practice", "make practice prompts and give feedback"),
+    ("Checklist Maker", "checklist", "build checklists that are easy to follow"),
+    ("Explainer", "explain", "explain hard ideas in plain language"),
+    ("Quality Check", "quality", "score an answer and suggest improvements"),
+    ("Idea Sprint", "sprint", "generate several useful ideas and pick the strongest"),
+    ("Troubleshooter", "fix", "diagnose a problem and propose safe fixes"),
+]
+
+PALETTES = [
+    ("#38bdf8", "#14b8a6"), ("#2dd4bf", "#f472b6"), ("#facc15", "#60a5fa"),
+    ("#a78bfa", "#34d399"), ("#fb7185", "#fbbf24"), ("#93c5fd", "#22c55e"),
+    ("#c084fc", "#67e8f9"), ("#f97316", "#84cc16"), ("#e879f9", "#38bdf8"),
 ]
 
 
@@ -39,9 +70,12 @@ def read(path: str) -> str:
     return file.read_text(encoding="utf-8") if file.exists() else ""
 
 
+def slugify(value: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
+
+
 def used_slugs() -> set[str]:
-    catalog = read("README.md")
-    return set(re.findall(r"ai-chatbots/([a-z0-9-]+)-chatbot-", catalog))
+    return set(re.findall(r"ai-chatbots/([a-z0-9-]+)-chatbot-", read("README.md")))
 
 
 def next_number(text: str) -> int:
@@ -51,28 +85,56 @@ def next_number(text: str) -> int:
 
 def append_row(path: str, row: str) -> None:
     file = ROOT / path
-    text = read(path)
-    write(file, text.rstrip() + "\n" + row)
+    write(file, read(path).rstrip() + "\n" + row)
 
 
-def pick_theme() -> tuple[str, str, str, str, str, str]:
+def all_ideas() -> list[dict[str, str]]:
+    ideas = []
+    for domain, domain_slug, domain_focus in DOMAINS:
+        for role, role_slug, role_style in ROLES:
+            for job, job_slug, job_focus in JOBS:
+                slug = f"{domain_slug}-{role_slug}-{job_slug}"
+                title = f"{domain} {role} {job}"
+                focus = f"{domain_focus}; {job_focus}; {role_style}"
+                digest = hashlib.sha1(slug.encode("utf-8")).hexdigest()
+                accent, accent2 = PALETTES[int(digest[:2], 16) % len(PALETTES)]
+                ideas.append({
+                    "slug": slug,
+                    "title": title,
+                    "category": domain,
+                    "focus": focus,
+                    "accent": accent,
+                    "accent2": accent2,
+                })
+    return ideas
+
+
+def pick_theme() -> dict[str, str]:
     used = used_slugs()
-    available = [theme for theme in THEMES if theme[0] not in used]
+    available = [idea for idea in all_ideas() if idea["slug"] not in used]
     if not available:
-        raise SystemExit("No unused themes left. Add more themes before running again.")
+        raise SystemExit("No unused idea combinations left. Add more idea parts before running again.")
+    random.seed(datetime.now(timezone.utc).isoformat())
     return random.choice(available)
 
 
 def build() -> str:
-    slug, title, category, focus, accent, accent2 = pick_theme()
+    theme = pick_theme()
+    slug = theme["slug"]
+    title = theme["title"]
+    category = theme["category"]
+    focus = theme["focus"]
+    accent = theme["accent"]
+    accent2 = theme["accent2"]
+
     now = datetime.now(timezone.utc)
     stamp = now.strftime("%Y-%m-%d-%H%M%Sz")
     made = now.strftime("%Y-%m-%d %H:%M UTC")
     folder = OUT / f"{slug}-chatbot-{stamp}"
     project_path = folder.relative_to(ROOT).as_posix()
 
-    system = f"You are {title}, a concise and practical chatbot for {focus}. Keep advice safe, clear, and action-oriented."
-    demo = f"Demo mode: I can help with {focus}. Ask one specific question and I will give a useful next step."
+    system = f"You are {title}, a concise practical chatbot for {focus}. Keep replies safe, clear, specific, and useful."
+    demo = f"Demo mode: I am {title}. I can help with {focus}. Ask one specific question and I will give a useful next step."
 
     write(folder / "README.md", f"""
     # {title}
@@ -134,7 +196,7 @@ def build() -> str:
           <header><p>{category}</p><h1>{title}</h1><span id="status">demo ready</span></header>
           <form id="keyForm"><input id="apiKey" type="password" placeholder="Optional OpenAI API key"><button>Use Key</button></form>
           <div id="messages"></div>
-          <form id="chatForm"><input id="text" placeholder="Ask about {focus}..."><button>Send</button></form>
+          <form id="chatForm"><input id="text" placeholder="Ask this chatbot for help..."><button>Send</button></form>
         </section>
       </main>
       <script src="script.js"></script>
@@ -151,7 +213,7 @@ def build() -> str:
     header, form {{ display: grid; gap: 10px; padding: 18px 22px; border-bottom: 1px solid #ffffff1a; }}
     header {{ grid-template-columns: 1fr auto; align-items: center; }}
     header p {{ margin: 0 0 4px; color: {accent}; text-transform: uppercase; font-size: .75rem; letter-spacing: .08em; }}
-    h1 {{ margin: 0; font-size: clamp(1.6rem, 4vw, 2.35rem); }}
+    h1 {{ margin: 0; font-size: clamp(1.45rem, 4vw, 2.25rem); }}
     #status {{ border: 1px solid {accent}; color: {accent}; padding: 6px 10px; border-radius: 999px; font-size: .78rem; }}
     #messages {{ padding: 22px; display: flex; flex-direction: column; gap: 14px; overflow: auto; }}
     .msg {{ max-width: min(84%, 560px); padding: 12px 14px; border-radius: 8px; line-height: 1.5; white-space: pre-wrap; background: #202936; }}
@@ -219,7 +281,7 @@ def build() -> str:
     number = next_number(read("README.md"))
     append_row("README.md", f"| {number} | {title} | {made} | {category} | `{project_path}` | Successful demo | Browser demo + Vercel/OpenAI-ready | Not deployed |")
     append_row("tracking/successful-projects.md", f"| {number} | {title} | {made} | `{project_path}` | Browser demo created. |")
-    append_row("tracking/model-usage.md", f"| {number} | {title} | Browser rules | gpt-4.1-mini via visitor key | generated by automation pipeline |")
+    append_row("tracking/model-usage.md", f"| {number} | {title} | Browser rules | gpt-4.1-mini via visitor key | generated by automation pipeline idea engine |")
     append_row("tracking/deployment-links.md", f"| {number} | {title} | `{project_path}` | Pending | Not deployed |")
     return project_path
 
