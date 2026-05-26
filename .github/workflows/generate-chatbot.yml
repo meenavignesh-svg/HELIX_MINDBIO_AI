@@ -35,8 +35,9 @@ jobs:
         run: |
           python -m py_compile tools/chatbot_factory/generate.py
           python -m py_compile tools/chatbot_factory/normalize_readme.py
+          python -m py_compile tools/chatbot_factory/validate_premium.py
 
-      - name: Generate chatbot
+      - name: Generate premium chatbot
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_MODEL: ${{ secrets.OPENAI_MODEL }}
@@ -44,6 +45,7 @@ jobs:
           GEMINI_MODEL: ${{ secrets.GEMINI_MODEL }}
         run: |
           python tools/chatbot_factory/generate.py | tee generated-chatbot.txt
+          python tools/chatbot_factory/validate_premium.py generated-chatbot.txt
           python tools/chatbot_factory/normalize_readme.py
           echo "CHATBOT_PATH=$(sed -n 's/^Created //p' generated-chatbot.txt | tail -n 1)" >> "$GITHUB_ENV"
 
@@ -57,7 +59,7 @@ jobs:
             echo "changes_detected=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          git commit -m "Add generated chatbot project"
+          git commit -m "Add premium chatbot project"
           git pull --rebase origin main
           git push origin HEAD:main
           echo "changes_detected=true" >> "$GITHUB_OUTPUT"
@@ -93,11 +95,11 @@ jobs:
           commit_url = f'https://github.com/meenavignesh-svg/ai-chat-bots-per-minute/commit/{commit_hash}' if commit_hash else 'https://github.com/meenavignesh-svg/ai-chat-bots-per-minute'
 
           msg = EmailMessage()
-          msg['Subject'] = 'New AI chatbot created'
+          msg['Subject'] = 'New premium AI chatbot created'
           msg['From'] = sender
           msg['To'] = 'torrickytan@gmail.com'
           msg.set_content(
-              'A new chatbot project was created.\n\n'
+              'A new premium chatbot project was created.\n\n'
               f'Project path: {chatbot_path}\n'
               'Repository: https://github.com/meenavignesh-svg/ai-chat-bots-per-minute\n'
               f'Commit: {commit_url}\n'
