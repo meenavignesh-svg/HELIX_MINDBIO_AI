@@ -17,3 +17,4 @@ Use Vercel root-directory deployment for individual chatbot folders when a publi
 - 2026-05-26 13:59 UTC: Biotech Notes - `ai-chatbots/biotech-notes-chatbot-2026-05-26-135923z` - Vercel link pending.
 - 2026-05-26 13:59 UTC: Biotech Notes - `ai-chatbots/biotech-notes-chatbot-2026-05-26-135959z` - Vercel link pending.
 - 2026-05-26 14:01 UTC: Robot Gardener - `ai-chatbots/robot-gardener-chatbot-2026-05-26-140144z` - Vercel link pending.
+- 2026-05-26 14:08 UTC: Game Master - `ai-chatbots/game-master-chatbot-2026-05-26-140827z` - Vercel link pending.
