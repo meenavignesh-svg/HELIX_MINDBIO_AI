@@ -5,10 +5,38 @@ A clean archive for generated browser-demo chatbot experiments.
 ## What This Repo Does
 
 - Builds small chatbot projects through GitHub Actions.
-- Keeps one catalog entry per generated project.
-- Avoids duplicate chatbot themes while unused themes are available.
+- Uses OpenAI or Gemini for fresh chatbot concepts when keys are available.
+- Falls back to a local idea engine if no AI key is set.
 - Keeps generated projects in `ai-chatbots/`.
 - Tracks progress in `tracking/`.
+- Sends an email after each successful generated chatbot when mail secrets are set.
+
+## GitHub Secrets To Add
+
+Add secrets in GitHub: Settings → Secrets and variables → Actions → New repository secret.
+
+Required for AI-generated concepts:
+
+- `OPENAI_API_KEY`
+
+Optional:
+
+- `OPENAI_MODEL` such as `gpt-4.1-mini`
+- `GEMINI_API_KEY`
+- `GEMINI_MODEL` such as `gemini-1.5-flash`
+
+Required for email notifications:
+
+- `MAIL_USERNAME`
+- `MAIL_PASSWORD`
+
+Optional email settings:
+
+- `MAIL_SERVER` defaults to `smtp.gmail.com`
+- `MAIL_PORT` defaults to `465`
+- `MAIL_FROM` defaults to `MAIL_USERNAME`
+
+For Gmail, `MAIL_PASSWORD` should be a Gmail App Password, not the normal Gmail login password.
 
 ## Chatbot Catalog
 
