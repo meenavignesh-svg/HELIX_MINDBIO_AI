@@ -15,3 +15,4 @@
 | 11 | MasteryMap AI Learning Diagnostic Studio | 2026-05-26 22:38 UTC | `ai-chatbots/masterymap-learning-diagnostic-studio-2026-05-26-223857z` | $1,000/month tutoring product add-on | 95/100 |
 | 12 | ClaimGuard AI Revenue Integrity Copilot | 2026-05-26 23:46 UTC | `ai-chatbots/claimguard-revenue-integrity-copilot-2026-05-26-234642z` | $1,200/month clinic pilot | 95/100 |
 | 13 | SourceProof AI RAG Answer Auditor | 2026-05-27 02:47 UTC | `ai-chatbots/sourceproof-rag-answer-auditor-2026-05-27-024751z` | $2,000/month RAG QA suite | 95/100 |
+| 14 | SourceProof AI RAG Answer Auditor | 2026-05-27 06:59 UTC | `ai-chatbots/sourceproof-rag-answer-auditor-2026-05-27-065930z` | $2,000/month RAG QA suite | 95/100 |
