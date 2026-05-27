@@ -16,3 +16,4 @@
 | 12 | ClaimGuard AI Revenue Integrity Copilot | OpenAI + Gemini if available | quality-first generation |
 | 13 | SourceProof AI RAG Answer Auditor | OpenAI + Gemini if available | quality-first generation |
 | 14 | SourceProof AI RAG Answer Auditor | OpenAI + Gemini if available | quality-first generation |
+| 15 | SourceProof AI RAG Answer Auditor | OpenAI + Gemini if available | quality-first generation |

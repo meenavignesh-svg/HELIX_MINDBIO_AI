@@ -71,6 +71,7 @@ The archive is focused on five flagship product families:
 | 12 | ClaimGuard AI Revenue Integrity Copilot | 2026-05-26 23:46 UTC | Medical Coding | `ai-chatbots/claimguard-revenue-integrity-copilot-2026-05-26-234642z` | $1,200/month clinic pilot | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/claimguard-revenue-integrity-copilot-2026-05-26-234642z/ |
 | 13 | SourceProof AI RAG Answer Auditor | 2026-05-27 02:47 UTC | RAG | `ai-chatbots/sourceproof-rag-answer-auditor-2026-05-27-024751z` | $2,000/month RAG QA suite | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/sourceproof-rag-answer-auditor-2026-05-27-024751z/ |
 | 14 | SourceProof AI RAG Answer Auditor | 2026-05-27 06:59 UTC | RAG | `ai-chatbots/sourceproof-rag-answer-auditor-2026-05-27-065930z` | $2,000/month RAG QA suite | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/sourceproof-rag-answer-auditor-2026-05-27-065930z/ |
+| 15 | SourceProof AI RAG Answer Auditor | 2026-05-27 10:58 UTC | RAG | `ai-chatbots/sourceproof-rag-answer-auditor-2026-05-27-105839z` | $2,000/month RAG QA suite | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/sourceproof-rag-answer-auditor-2026-05-27-105839z/ |
 
 ## Required Secrets
 
