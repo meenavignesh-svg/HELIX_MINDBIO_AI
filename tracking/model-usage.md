@@ -14,3 +14,4 @@
 | 10 | MasteryMap AI Learning Diagnostic Studio | OpenAI + Gemini if available | quality-first generation |
 | 11 | MasteryMap AI Learning Diagnostic Studio | OpenAI + Gemini if available | quality-first generation |
 | 12 | ClaimGuard AI Revenue Integrity Copilot | OpenAI + Gemini if available | quality-first generation |
+| 13 | SourceProof AI RAG Answer Auditor | OpenAI + Gemini if available | quality-first generation |
