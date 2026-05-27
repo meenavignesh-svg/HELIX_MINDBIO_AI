@@ -1,109 +1,111 @@
-# Premium AI Chatbot Products
+# Professor Voice Assistant
 
-This repository is a clean automation archive for building **two serious premium AI chatbot products per day**.
+A lightweight offline-first voice assistant for Windows 11. Professor can open apps, search the web, create safe folders, tell the time, help with beginner bioinformatics tasks, and optionally answer using OpenAI or Gemini when an API key exists.
 
-The goal is quality, not volume. New projects must look and feel like products that could become paid tools.
+This project is original code, built in the style of common desktop voice assistants. No API keys are stored in the repository.
 
-## Automation Standard
+## Features
 
-Each generated product must include:
+- Wake word: `professor`
+- `open chrome`
+- `open vscode`
+- `open youtube`
+- `search google for <query>`
+- `create folder <name>`
+- `open folder`
+- `tell time`
+- `explain bioinformatics`
+- `gc content of <DNA sequence>`
+- `reverse complement of <DNA sequence>`
+- `transcribe <DNA sequence>`
+- `translate dna <DNA sequence>`
+- `exit`
+- Offline voice output with `pyttsx3`
+- Optional OpenAI or Gemini response mode
 
-- a focused high-value use case
-- premium product positioning
-- a complete browser demo
-- a serverless OpenAI API route
-- visitor API-key support for demos
-- product specification
-- sample input data
-- screenshot asset
-- GitHub Pages demo copy
-- README with setup, deployment, and value proposition
-- validation before commit
+## Safety
 
-## Schedule
+- API keys are read only from environment variables.
+- Keys are never hardcoded.
+- AI responses are never executed as system commands.
+- Dangerous commands like deleting system files are not included.
+- Shutdown and restart are blocked unless a separate confirmation feature is added later.
 
-The workflow runs twice per day:
+## Setup on Windows 11
 
-| Run | UTC Time | Purpose |
-| --- | --- | --- |
-| 1 | 00:30 | Build one premium AI chatbot product |
-| 2 | 12:30 | Build one premium AI chatbot product |
+1. Install Python 3.10 or newer.
+2. Open PowerShell in this folder.
+3. Create a virtual environment:
 
-Manual runs are also available from GitHub Actions.
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
 
-## Repository Structure
+4. Install dependencies:
 
-| Path | Purpose |
-| --- | --- |
-| `ai-chatbots/` | Generated premium AI chatbot products |
-| `docs/` | GitHub Pages browser demos |
-| `tools/chatbot_factory/` | Product generator and validator |
-| `tracking/` | Success, deployment, model, quality, and metrics logs |
-| `.github/workflows/` | Automation workflows |
+```powershell
+pip install -r requirements.txt
+```
 
-## Flagship Direction
+If `PyAudio` fails to install, use:
 
-The archive is focused on five flagship product families:
+```powershell
+pip install pipwin
+pipwin install pyaudio
+pip install -r requirements.txt
+```
 
-| Product Family | Commercial Angle |
-| --- | --- |
-| Medical coding AI | Revenue integrity and claim review |
-| Biotech research AI | Paper triage and diligence workflows |
-| RAG QA AI | Source-grounded answer auditing |
-| Automation AI | Operations workflow risk analysis |
-| Local LLM AI | Private model evaluation and benchmarking |
+## Optional AI Mode
 
-## Premium Product Catalog
+OpenAI:
 
-| S.No | Product | Made On (UTC) | Category | Folder | Value | Demo |
-| ---: | --- | --- | --- | --- | --- | --- |
-| 1 | SourceProof AI RAG Answer Auditor | 2026-05-26 16:31 UTC | RAG | `ai-chatbots/sourceproof-rag-answer-auditor-2026-05-26-163112z` | $2,000/month RAG QA suite | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/sourceproof-rag-answer-auditor-2026-05-26-163112z/ |
-| 2 | ClaimGuard AI Revenue Integrity Copilot | 2026-05-26 16:33 UTC | Medical Coding | `ai-chatbots/claimguard-revenue-integrity-copilot-2026-05-26-163320z` | $1,200/month clinic pilot | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/claimguard-revenue-integrity-copilot-2026-05-26-163320z/ |
-| 3 | BioSignal AI Paper-to-Decision Analyst | 2026-05-26 16:37 UTC | Biotech | `ai-chatbots/biosignal-paper-decision-analyst-2026-05-26-163716z` | $1,500/month diligence workspace | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/biosignal-paper-decision-analyst-2026-05-26-163716z/ |
-| 4 | BioSignal AI Paper-to-Decision Analyst | 2026-05-26 16:45 UTC | Biotech | `ai-chatbots/biosignal-paper-decision-analyst-2026-05-26-164535z` | $1,500/month diligence workspace | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/biosignal-paper-decision-analyst-2026-05-26-164535z/ |
-| 5 | MasteryMap AI Learning Diagnostic Studio | 2026-05-26 16:57 UTC | Education | `ai-chatbots/masterymap-learning-diagnostic-studio-2026-05-26-165707z` | $1,000/month tutoring product add-on | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/masterymap-learning-diagnostic-studio-2026-05-26-165707z/ |
-| 6 | ModelBench AI Local LLM Evaluation Console | 2026-05-26 16:57 UTC | Local LLM | `ai-chatbots/modelbench-local-llm-evaluation-console-2026-05-26-165740z` | $1,250/month private AI evaluation lab | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/modelbench-local-llm-evaluation-console-2026-05-26-165740z/ |
-| 7 | MasteryMap AI Learning Diagnostic Studio | 2026-05-26 17:05 UTC | Education | `ai-chatbots/masterymap-learning-diagnostic-studio-2026-05-26-170514z` | $1,000/month tutoring product add-on | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/masterymap-learning-diagnostic-studio-2026-05-26-170514z/ |
-| 8 | SourceProof AI RAG Answer Auditor | 2026-05-26 17:05 UTC | RAG | `ai-chatbots/sourceproof-rag-answer-auditor-2026-05-26-170551z` | $2,000/month RAG QA suite | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/sourceproof-rag-answer-auditor-2026-05-26-170551z/ |
-| 9 | ModelBench AI Local LLM Evaluation Console | 2026-05-26 19:28 UTC | Local LLM | `ai-chatbots/modelbench-local-llm-evaluation-console-2026-05-26-192800z` | $1,250/month private AI evaluation lab | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/modelbench-local-llm-evaluation-console-2026-05-26-192800z/ |
-| 10 | MasteryMap AI Learning Diagnostic Studio | 2026-05-26 21:10 UTC | Education | `ai-chatbots/masterymap-learning-diagnostic-studio-2026-05-26-211046z` | $1,000/month tutoring product add-on | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/masterymap-learning-diagnostic-studio-2026-05-26-211046z/ |
-| 11 | MasteryMap AI Learning Diagnostic Studio | 2026-05-26 22:38 UTC | Education | `ai-chatbots/masterymap-learning-diagnostic-studio-2026-05-26-223857z` | $1,000/month tutoring product add-on | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/masterymap-learning-diagnostic-studio-2026-05-26-223857z/ |
-| 12 | ClaimGuard AI Revenue Integrity Copilot | 2026-05-26 23:46 UTC | Medical Coding | `ai-chatbots/claimguard-revenue-integrity-copilot-2026-05-26-234642z` | $1,200/month clinic pilot | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/claimguard-revenue-integrity-copilot-2026-05-26-234642z/ |
-| 13 | SourceProof AI RAG Answer Auditor | 2026-05-27 02:47 UTC | RAG | `ai-chatbots/sourceproof-rag-answer-auditor-2026-05-27-024751z` | $2,000/month RAG QA suite | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/sourceproof-rag-answer-auditor-2026-05-27-024751z/ |
-| 14 | SourceProof AI RAG Answer Auditor | 2026-05-27 06:59 UTC | RAG | `ai-chatbots/sourceproof-rag-answer-auditor-2026-05-27-065930z` | $2,000/month RAG QA suite | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/sourceproof-rag-answer-auditor-2026-05-27-065930z/ |
-| 15 | SourceProof AI RAG Answer Auditor | 2026-05-27 10:58 UTC | RAG | `ai-chatbots/sourceproof-rag-answer-auditor-2026-05-27-105839z` | $2,000/month RAG QA suite | https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/sourceproof-rag-answer-auditor-2026-05-27-105839z/ |
+```powershell
+$env:OPENAI_API_KEY="your_openai_key_here"
+```
 
-## Required Secrets
+Gemini:
 
-Set these in GitHub repository secrets:
+```powershell
+$env:GEMINI_API_KEY="your_gemini_key_here"
+```
 
-- `OPENAI_API_KEY`
-- `GEMINI_API_KEY`
-- `MAIL_USERNAME`
-- `MAIL_PASSWORD`
+Professor still works without these keys.
 
-Optional:
+## Run
 
-- `OPENAI_MODEL`
-- `GEMINI_MODEL`
-- `MAIL_SERVER`
-- `MAIL_PORT`
-- `MAIL_FROM`
+```powershell
+python main.py
+```
 
-## Pages
+Say:
 
-Use one simple deployment path:
+```text
+professor open chrome
+professor open youtube
+professor search google for python projects
+professor create folder school notes
+professor tell time
+professor explain bioinformatics
+professor gc content of ATGCGCGTTA
+professor reverse complement of ATGCCGTA
+professor transcribe ATGCCGTA
+professor translate dna ATGGCCATTGTA
+professor exit
+```
 
-- Source: **Deploy from a branch**
-- Branch: `main`
-- Folder: `/docs`
+## Offline Bioinformatics Tools
 
-Do not use the GitHub Actions Pages source for this repo. The generated chatbot demos are static files under `docs/`, so branch-based Pages is the most reliable option.
+Professor can run these without any internet connection:
 
-Demo home:
+- GC percentage calculation
+- DNA reverse complement
+- DNA to RNA transcription
+- Basic DNA codon translation
+- Short beginner explanation of bioinformatics
 
-https://meenavignesh-svg.github.io/ai-chat-bots-per-minute/
+## Low-End Laptop Notes
 
-## Quality Rule
-
-If a generated product does not meet the premium standard, the workflow must fail and commit nothing.
+- Uses offline `pyttsx3` for voice output.
+- Keeps local command handling simple and fast.
+- Cloud AI loads only when a key exists and a command is not recognized locally.
