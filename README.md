@@ -30,6 +30,9 @@ This project is original code, built in the style of common desktop voice assist
 - `exit`
 - Offline voice output with `pyttsx3`
 - Optional OpenAI or Gemini response mode
+- First-run local permission setup
+- Desktop app window with animated biotech 3D-style DNA visuals
+- Local command console inside the app
 
 ## Install Like A Windows App
 
@@ -40,6 +43,16 @@ This project is original code, built in the style of common desktop voice assist
 5. Open Professor from the Start Menu or Desktop shortcut.
 
 If the latest release is not visible yet, open [Build Windows Installer](https://github.com/meenavignesh-svg/ai-chat-bots-per-minute/actions/workflows/build-windows-installer.yml), wait for the run to finish, then check the latest release again.
+
+## Visual Interface
+
+Professor opens as a local desktop app with:
+
+- animated 3D-style DNA helix
+- glowing biotech control panel
+- local command box
+- voice start button
+- permission prompts saved on your computer
 
 ## Safety
 
