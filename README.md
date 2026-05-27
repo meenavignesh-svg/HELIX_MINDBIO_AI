@@ -1,5 +1,7 @@
 # Professor Voice Assistant
 
+[Download Professor ZIP](https://github.com/meenavignesh-svg/ai-chat-bots-per-minute/archive/refs/heads/main.zip)
+
 A lightweight offline-first voice assistant for Windows 11. Professor can open apps, search the web, create safe folders, tell the time, help with beginner bioinformatics tasks, and optionally answer using OpenAI or Gemini when an API key exists.
 
 This project is original code, built in the style of common desktop voice assistants. No API keys are stored in the repository.
@@ -33,7 +35,15 @@ This project is original code, built in the style of common desktop voice assist
 
 ## Setup on Windows 11
 
-### Easy App-Style Setup
+### Download
+
+Use this direct link:
+
+https://github.com/meenavignesh-svg/ai-chat-bots-per-minute/archive/refs/heads/main.zip
+
+Then extract the ZIP and follow the setup below.
+
+### App-Style Setup
 
 1. Download the ZIP.
 2. Extract it.
