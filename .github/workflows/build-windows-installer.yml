@@ -40,7 +40,11 @@ jobs:
         run: choco install innosetup --yes --no-progress
 
       - name: Build setup installer
-        run: iscc installer\Professor.iss
+        shell: pwsh
+        run: |
+          $compiler = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
+          if (!(Test-Path $compiler)) { throw "Inno Setup compiler not found at $compiler" }
+          & $compiler installer\Professor.iss
 
       - name: Upload installer artifact
         uses: actions/upload-artifact@v4
