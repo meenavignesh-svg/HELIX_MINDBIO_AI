@@ -5,6 +5,7 @@ from __future__ import annotations
 import config
 from commands import handle_command
 from permissions import first_run_setup
+from professor_gui import run_app
 from speech import Speech
 
 
@@ -38,4 +39,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    run_app()
