@@ -1,6 +1,14 @@
 # Professor Voice Assistant
 
-[Download Professor ZIP](https://github.com/meenavignesh-svg/ai-chat-bots-per-minute/archive/refs/heads/main.zip)
+## Download
+
+**Windows installer:** build and download `ProfessorSetup.exe` from GitHub Actions:
+
+[Build Windows Installer](https://github.com/meenavignesh-svg/ai-chat-bots-per-minute/actions/workflows/build-windows-installer.yml)
+
+This creates a normal Windows installer with a Start Menu shortcut and optional Desktop shortcut, similar to installing Chrome.
+
+**Source ZIP:** [Download source ZIP](https://github.com/meenavignesh-svg/ai-chat-bots-per-minute/archive/refs/heads/main.zip)
 
 A lightweight offline-first voice assistant for Windows 11. Professor can open apps, search the web, create safe folders, tell the time, help with beginner bioinformatics tasks, and optionally answer using OpenAI or Gemini when an API key exists.
 
@@ -25,6 +33,17 @@ This project is original code, built in the style of common desktop voice assist
 - Offline voice output with `pyttsx3`
 - Optional OpenAI or Gemini response mode
 
+## Install Like A Windows App
+
+1. Open [Build Windows Installer](https://github.com/meenavignesh-svg/ai-chat-bots-per-minute/actions/workflows/build-windows-installer.yml).
+2. Click **Run workflow**.
+3. Wait until the run finishes.
+4. Open the finished run.
+5. Download the `ProfessorSetup` artifact.
+6. Extract it and double-click `ProfessorSetup.exe`.
+
+After install, open Professor from the Start Menu or the Desktop shortcut.
+
 ## Safety
 
 - API keys are read only from environment variables.
@@ -33,26 +52,18 @@ This project is original code, built in the style of common desktop voice assist
 - Dangerous commands like deleting system files are not included.
 - Shutdown and restart are blocked unless a separate confirmation feature is added later.
 
-## Setup on Windows 11
+## Simple ZIP Setup
 
-### Download
+Use this only if you do not want the installer:
 
-Use this direct link:
-
-https://github.com/meenavignesh-svg/ai-chat-bots-per-minute/archive/refs/heads/main.zip
-
-Then extract the ZIP and follow the setup below.
-
-### App-Style Setup
-
-1. Download the ZIP.
+1. Download the source ZIP.
 2. Extract it.
 3. Double-click `install.bat`.
 4. Double-click `Professor.bat`.
 
 If Windows asks for microphone permission, allow it.
 
-### Manual Setup
+## Manual Setup
 
 1. Install Python 3.10 or newer.
 2. Open PowerShell in this folder.
@@ -94,10 +105,6 @@ $env:GEMINI_API_KEY="your_gemini_key_here"
 Professor still works without these keys.
 
 ## Run
-
-```powershell
-python main.py
-```
 
 Say:
 
