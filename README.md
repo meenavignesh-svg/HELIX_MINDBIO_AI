@@ -33,6 +33,7 @@ This project is original code, built in the style of common desktop voice assist
 - First-run local permission setup
 - Desktop app window with animated biotech 3D-style DNA visuals
 - Local command console inside the app
+- Compact real-time worker mode
 
 ## Install Like A Windows App
 
@@ -53,6 +54,8 @@ Professor opens as a local desktop app with:
 - local command box
 - voice start button
 - permission prompts saved on your computer
+- automatic shrink mode after idle time
+- small always-on-top worker panel with Expand and Listen buttons
 
 ## Safety
 
