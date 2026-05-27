@@ -3,11 +3,17 @@ name: Build Windows Installer
 on:
   workflow_dispatch:
   push:
-    tags:
-      - "v*"
+    branches:
+      - main
+    paths:
+      - "*.py"
+      - "requirements.txt"
+      - "professor.spec"
+      - "installer/**"
+      - ".github/workflows/build-windows-installer.yml"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build-installer:
@@ -19,7 +25,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.10"
 
       - name: Install Python dependencies
         run: |
@@ -31,13 +37,24 @@ jobs:
         run: pyinstaller professor.spec --noconfirm --clean
 
       - name: Install Inno Setup
-        run: choco install innosetup --yes
+        run: choco install innosetup --yes --no-progress
 
       - name: Build setup installer
         run: iscc installer\Professor.iss
 
-      - name: Upload installer
+      - name: Upload installer artifact
         uses: actions/upload-artifact@v4
         with:
           name: ProfessorSetup
           path: installer-output\ProfessorSetup.exe
+
+      - name: Publish latest installer release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: professor-latest
+          name: Professor Voice Assistant Latest
+          body: Download ProfessorSetup.exe and run it to install Professor like a normal Windows app.
+          files: installer-output\ProfessorSetup.exe
+          make_latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
