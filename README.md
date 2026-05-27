@@ -33,6 +33,17 @@ This project is original code, built in the style of common desktop voice assist
 
 ## Setup on Windows 11
 
+### Easy App-Style Setup
+
+1. Download the ZIP.
+2. Extract it.
+3. Double-click `install.bat`.
+4. Double-click `Professor.bat`.
+
+If Windows asks for microphone permission, allow it.
+
+### Manual Setup
+
 1. Install Python 3.10 or newer.
 2. Open PowerShell in this folder.
 3. Create a virtual environment:
