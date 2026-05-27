@@ -9,6 +9,8 @@ a = Analysis(
     datas=[],
     hiddenimports=[
         "permissions",
+        "professor_gui",
+        "tkinter",
         "pyttsx3.drivers",
         "pyttsx3.drivers.sapi5",
         "speech_recognition",
