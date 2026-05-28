@@ -1,8 +1,21 @@
 # HelixMind Bio AI
 
-**HelixMind Bio AI** is a local-first Windows desktop assistant for bioinformatics work. It supports text and voice control, runs core analysis offline, and is designed for lightweight laptops.
+**HelixMind Bio AI** is a local-first Windows desktop assistant for bioinformatics work. She is designed to feel like a real-time lab assistant living in your computer: always ready in the console, accepting text or voice commands, keeping session notes, queueing jobs, and processing sequence tasks locally.
 
 Wake word: `helix`
+
+## Personality
+
+HelixMind is not just a generic Jarvis clone. She is a focused bioinformatics coworker for sequence analysis, FASTA handling, primer checks, PubMed searches, and lightweight research support.
+
+She can:
+
+- stay open in text or voice mode
+- report what she is doing with `helix status`
+- remember session notes while running
+- queue multiple jobs and process them together
+- write a local session log to `helixmind_session_log.txt`
+- work offline for core DNA/RNA/protein analysis
 
 ## What She Can Do
 
@@ -34,7 +47,22 @@ HelixMind Bio AI can help with:
 
 If voice input is difficult on your laptop, choose text mode. All bioinformatics commands still work.
 
-## Example Commands
+## Real-Time Worker Commands
+
+```text
+helix status
+helix project CRISPR off-target study
+helix note check GC before primer design
+helix show notes
+helix add job gc content of ATGCGCGTTA
+helix add job primer stats ATGCGTACGTAGCTAGCTA
+helix show jobs
+helix run jobs
+helix presence on
+helix quiet mode
+```
+
+## Bioinformatics Example Commands
 
 ```text
 helix help
@@ -62,6 +90,8 @@ helix open blast
 
 The built-in bioinformatics tools run on the computer. HelixMind Bio AI does not upload your sequences to a cloud service. Browser-opening commands only open public science websites in your browser.
 
+She does not watch private files automatically. You give her a folder, sequence, or FASTA path when you want work done.
+
 ## Windows Installer
 
 The included GitHub Actions workflow builds a Windows installer:
@@ -88,6 +118,8 @@ install_helixmind_bio_ai.bat        Dependency installer
 requirements_helixmind_bio_ai.txt   Python requirements
 helixmind_bio_ai.spec               PyInstaller build config
 installer/HelixMindBioAI.iss        Inno Setup installer script
+docs/COMMANDS.md                    Command guide
+sample_data/example_gene.fasta      Example FASTA file
 ```
 
 ## Safety Rules
@@ -95,9 +127,9 @@ installer/HelixMindBioAI.iss        Inno Setup installer script
 - No API keys are hardcoded.
 - No destructive system commands are included.
 - The assistant does not run unknown shell commands from generated text.
-- File writing is limited to explicit FASTA export commands.
+- File writing is limited to explicit FASTA export commands and the local session log.
 - Restart, shutdown, delete, and system-control commands are intentionally not implemented.
 
 ## Status
 
-HelixMind Bio AI is now focused as a clean bioinformatics desktop assistant instead of a generic Jarvis clone.
+HelixMind Bio AI is now focused as a clean local bioinformatics desktop assistant with a real-time worker style.
