@@ -10,6 +10,7 @@ a = Analysis(
     hiddenimports=[
         "helixmind_bio_ai",
         "bioinformatics_tools",
+        "ai_providers",
         "pyttsx3.drivers",
         "pyttsx3.drivers.sapi5",
         "speech_recognition",
