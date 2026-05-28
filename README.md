@@ -1,16 +1,29 @@
 # JANET Bio AI
 
-**JANET** is a light-themed, local-first Windows desktop agent for bioinformatics and computer work. She is designed to work like a local OpenClaw-style assistant: chat, plan, remember task context, open apps, type, click, run visible steps, and use local tools.
+**JANET** is a light-themed, local-first Windows desktop agent for bioinformatics and computer work. She is designed to work like a local OpenClaw-style assistant: chat, plan, remember task context, open apps, type, click, run visible steps, use local tools, and show an animated desktop presence.
 
 Wake word: `janet`
 
 Legacy wake word: `helix` still works.
+
+## Animated Desktop Presence
+
+JANET now has a lightweight animated avatar inside the desktop chat window:
+
+- idle state: green standing-by glow
+- thinking state: blue pulsing motion
+- responding state: violet speaking animation
+- orbiting bio/AI nodes
+- light theme, no heavy 3D engine required
+
+The animation runs inside the app window, so it stays lightweight for low-end Windows laptops.
 
 ## Local OpenClaw-Style Agent
 
 JANET can:
 
 - chat in a light desktop window
+- show an animated presence while working
 - make visible plans before work
 - open desktop apps
 - type or paste into the active window
@@ -58,8 +71,6 @@ plan analyze this FASTA file, summarize GC, then open PubMed
 agent plan open Chrome, search PubMed, and draft notes
 ```
 
-If provider is `local`, JANET creates a simple local plan. If you choose a provider and paste a key, JANET uses that provider for reasoning while still using local desktop tools for actions.
-
 ## Desktop Control Commands
 
 ```text
@@ -77,38 +88,7 @@ janet click 500 300
 
 ## Bioinformatics
 
-JANET can help with:
-
-- DNA/RNA cleanup and sequence reports
-- GC and AT content
-- reverse complement
-- DNA to RNA transcription
-- DNA translation
-- longest ORF detection
-- codon usage summaries
-- motif search
-- k-mer counting
-- primer statistics and estimated Tm
-- common restriction enzyme site scanning
-- FASTA summaries with total bases and N50
-- protein molecular weight estimation
-- quick sequence comparison
-- simple global alignment scoring
-- PubMed, NCBI, BLAST, UniProt, Ensembl, and PDB opening/searching
-
-## Desktop App
-
-After installing, open **JANET** from the Start Menu or desktop shortcut.
-
-The app opens a light chat window where you can type commands like:
-
-```text
-janet status
-janet open any app chrome
-janet type text Hello, I am JANET.
-janet gc content of ATGCGCGTTA
-janet search pubmed for crispr diagnostics
-```
+JANET can help with DNA/RNA reports, GC content, reverse complements, transcription, translation, ORFs, codon usage, motifs, k-mers, primer stats, restriction-site scans, FASTA summaries, protein weight, sequence comparison, alignment, and PubMed/NCBI/BLAST/UniProt/Ensembl/PDB opening.
 
 ## Safety Rules
 
