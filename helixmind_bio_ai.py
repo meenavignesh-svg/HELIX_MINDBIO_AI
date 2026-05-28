@@ -1,4 +1,4 @@
-"""HelixMind Bio AI - local voice/text assistant for bioinformatics and desktop work."""
+"""JANET - local voice/text assistant for bioinformatics and desktop work."""
 
 from __future__ import annotations
 
@@ -22,10 +22,12 @@ except Exception:
 
 import bioinformatics_tools as bio
 
-WAKE_WORD = "helix"
-APP_NAME = "HelixMind Bio AI"
-LOG_FILE = Path("helixmind_session_log.txt")
-WORKSPACE = Path("HelixMind_Workspace")
+WAKE_WORD = "janet"
+LEGACY_WAKE_WORD = "helix"
+APP_NAME = "JANET"
+APP_TITLE = "JANET - Bioinformatics Desktop Assistant"
+LOG_FILE = Path("janet_session_log.txt")
+WORKSPACE = Path("JANET_Workspace")
 SENSITIVE_WORDS = ("password", "passcode", "otp", "api key", "secret", "token", "private key", "credit card", "card number", "cvv")
 BLOCKED_KEYS = {"delete", "backspace"}
 BLOCKED_HOTKEYS = {"alt+f4", "ctrl+w", "ctrl+q", "shift+delete"}
@@ -33,8 +35,8 @@ BLOCKED_HOTKEYS = {"alt+f4", "ctrl+w", "ctrl+q", "shift+delete"}
 
 class HelixMindBioAI:
     def __init__(self) -> None:
-        self.fast_mode = os.getenv("HELIXMIND_FAST", "1").strip().lower() not in {"0", "false", "off", "no"}
-        self.voice_output_enabled = os.getenv("HELIXMIND_VOICE_OUTPUT", "0").strip().lower() in {"1", "true", "on", "yes"}
+        self.fast_mode = os.getenv("JANET_FAST", os.getenv("HELIXMIND_FAST", "1")).strip().lower() not in {"0", "false", "off", "no"}
+        self.voice_output_enabled = os.getenv("JANET_VOICE_OUTPUT", os.getenv("HELIXMIND_VOICE_OUTPUT", "0")).strip().lower() in {"1", "true", "on", "yes"}
         self.engine = pyttsx3.init()
         self.engine.setProperty("rate", 220 if self.fast_mode else 172)
         self.recognizer = sr.Recognizer()
@@ -46,13 +48,19 @@ class HelixMindBioAI:
         if pyautogui is not None:
             pyautogui.PAUSE = 0.02 if self.fast_mode else 0.10
         WORKSPACE.mkdir(exist_ok=True)
+        self.apply_light_theme()
+
+    def apply_light_theme(self) -> None:
+        if os.name == "nt":
+            os.system(f"title {APP_TITLE}")
+            os.system("color F0")
 
     def action_delay(self) -> float:
         return 0.08 if self.fast_mode else 0.40
 
     def speak(self, text: str) -> None:
         print(f"\n{APP_NAME}: {text}\n")
-        self.write_log(f"HELIXMIND: {text}")
+        self.write_log(f"JANET: {text}")
         if self.fast_mode and not self.voice_output_enabled:
             return
         try:
@@ -85,15 +93,16 @@ class HelixMindBioAI:
     def normalize(self, command: str) -> str:
         command = command.lower().strip()
         self.write_log(f"USER: {command}")
-        if command.startswith(WAKE_WORD):
-            command = command.replace(WAKE_WORD, "", 1).strip(" ,")
+        for wake_word in (WAKE_WORD, LEGACY_WAKE_WORD):
+            if command.startswith(wake_word):
+                return command.replace(wake_word, "", 1).strip(" ,")
         return command
 
     def answer(self, command: str) -> tuple[str, bool]:
         command = self.normalize(command)
 
         if command in {"exit", "quit", "stop", "sleep"}:
-            return "Closing. Local log saved in helixmind_session_log.txt.", False
+            return "Closing. Local log saved in janet_session_log.txt.", False
         if command in {"help", "commands", "what can you do"}:
             return self.help_text(), True
         if command in {"status", "what are you doing", "are you there"}:
@@ -117,6 +126,9 @@ class HelixMindBioAI:
         if command in {"voice output off", "silent mode"}:
             self.voice_output_enabled = False
             return "Voice output off. I will respond in text only.", True
+        if command in {"light theme", "light mode"}:
+            self.apply_light_theme()
+            return "Light theme applied.", True
         if command in {"presence on", "stay awake"}:
             self.presence_enabled = True
             return "Presence mode on.", True
@@ -145,9 +157,9 @@ class HelixMindBioAI:
             return response
         if not self.presence_enabled:
             return response
-        prefix = "I finished that."
+        prefix = "Done."
         if "No " in response or "Could not" in response or "Use:" in response or "blocked" in response.lower():
-            prefix = "I checked it and need a cleaner or safer input."
+            prefix = "I need a cleaner or safer input."
         return f"{prefix}\n{response}"
 
     def desktop_ready(self) -> bool:
@@ -351,6 +363,8 @@ class HelixMindBioAI:
     def status_report(self) -> str:
         desktop = "ready" if self.desktop_ready() else "missing dependencies"
         return (
+            f"Assistant: JANET\n"
+            f"Theme: light\n"
             f"Active project: {self.active_project}\n"
             f"Workspace: {WORKSPACE.resolve()}\n"
             f"Desktop control: {desktop}\n"
@@ -369,7 +383,7 @@ class HelixMindBioAI:
         resolved_workspace = WORKSPACE.resolve()
         resolved_path = path.resolve()
         if resolved_workspace not in resolved_path.parents and resolved_path != resolved_workspace:
-            raise ValueError("For safety, file writing is limited to the HelixMind_Workspace folder.")
+            raise ValueError("For safety, file writing is limited to the JANET_Workspace folder.")
         return resolved_path
 
     def create_folder(self, folder_text: str) -> str:
@@ -530,27 +544,28 @@ class HelixMindBioAI:
 
     def help_text(self) -> str:
         return (
-            "Fast commands:\n"
-            "helix fast mode\n"
-            "helix voice output off\n"
-            "helix desktop status\n"
-            "helix open any app chrome\n"
-            "helix type text Hello, I am HelixMind.\n"
-            "helix hotkey ctrl+s\n"
-            "helix wait 0.2\n"
-            "helix add job open any app notepad\n"
-            "helix add job wait 0.5\n"
-            "helix add job type text Sequence report ready.\n"
-            "helix run jobs\n"
-            "helix gc content of ATGCGCGTTA"
+            "JANET fast commands:\n"
+            "janet fast mode\n"
+            "janet light theme\n"
+            "janet voice output off\n"
+            "janet desktop status\n"
+            "janet open any app chrome\n"
+            "janet type text Hello, I am JANET.\n"
+            "janet hotkey ctrl+s\n"
+            "janet wait 0.2\n"
+            "janet add job open any app notepad\n"
+            "janet add job wait 0.5\n"
+            "janet add job type text Sequence report ready.\n"
+            "janet run jobs\n"
+            "janet gc content of ATGCGCGTTA"
         )
 
     def heartbeat(self) -> None:
         if self.presence_enabled and not self.fast_mode:
-            print(f"{APP_NAME}: standing by for {self.active_project}. Type 'helix help' or add a job.")
+            print(f"{APP_NAME}: standing by for {self.active_project}. Type 'janet help' or add a job.")
 
     def run_text_mode(self) -> None:
-        self.speak("Ready. Fast mode is on by default. Type helix help for commands.")
+        self.speak("Ready. I am JANET. Light theme and fast mode are on. Type janet help for commands.")
         last_heartbeat = time.time()
         while True:
             try:
@@ -568,10 +583,10 @@ class HelixMindBioAI:
 
     def run_voice_mode(self) -> None:
         self.voice_output_enabled = True
-        self.speak("Voice mode ready. Say Helix, then your command.")
+        self.speak("Voice mode ready. Say JANET, then your command.")
         while True:
             command = self.listen()
-            if not command or WAKE_WORD not in command:
+            if not command or (WAKE_WORD not in command and LEGACY_WAKE_WORD not in command):
                 continue
             response, keep_running = self.answer(command)
             self.speak(response)
@@ -581,8 +596,8 @@ class HelixMindBioAI:
 
 if __name__ == "__main__":
     assistant = HelixMindBioAI()
-    preferred_mode = os.getenv("HELIXMIND_MODE", "").strip().lower()
-    mode = preferred_mode or input("Type mode or voice mode? [text/voice]: ").strip().lower()
+    preferred_mode = os.getenv("JANET_MODE", os.getenv("HELIXMIND_MODE", "")).strip().lower()
+    mode = preferred_mode or input("Text mode or voice mode? [text/voice]: ").strip().lower()
     if mode.startswith("v"):
         assistant.run_voice_mode()
     else:
