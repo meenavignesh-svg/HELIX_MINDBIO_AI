@@ -2,6 +2,36 @@
 
 Use `helix` before a command in voice mode. In text mode, either style works.
 
+## Desktop Control
+
+```text
+helix desktop status
+helix open any app chrome
+helix open any app notepad
+helix open any app visual studio code
+helix type text Hello, I am HelixMind.
+helix paste text This goes into the active window.
+helix press key enter
+helix press key tab
+helix hotkey ctrl+s
+helix hotkey ctrl+a
+helix hotkey ctrl+c
+helix hotkey ctrl+v
+helix wait 2
+helix click
+helix click 500 300
+```
+
+## Desktop Workflow Example
+
+```text
+helix add job open any app notepad
+helix add job wait 2
+helix add job type text HelixMind is working inside this computer.
+helix add job hotkey ctrl+s
+helix run jobs
+```
+
 ## Real-Time Presence
 
 ```text
@@ -113,4 +143,4 @@ helix search pubmed for crispr diagnostics
 
 ## Safety Limits
 
-HelixMind will not delete files, restart/shutdown the computer, run unknown shell commands, or silently control private files. General file writing is limited to `HelixMind_Workspace`.
+HelixMind can open apps and type into the active window, but she will not type passwords, OTPs, API keys, secrets, or run destructive system commands.
