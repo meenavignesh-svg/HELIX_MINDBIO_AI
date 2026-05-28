@@ -1,4 +1,4 @@
-"""HelixMind Bio AI - local voice/text assistant for bioinformatics work."""
+"""HelixMind Bio AI - local voice/text assistant for bioinformatics and safe desktop work."""
 
 from __future__ import annotations
 
@@ -18,6 +18,7 @@ import bioinformatics_tools as bio
 WAKE_WORD = "helix"
 APP_NAME = "HelixMind Bio AI"
 LOG_FILE = Path("helixmind_session_log.txt")
+WORKSPACE = Path("HelixMind_Workspace")
 
 
 class HelixMindBioAI:
@@ -30,6 +31,7 @@ class HelixMindBioAI:
         self.completed_jobs: list[str] = []
         self.active_project = "bioinformatics workspace"
         self.presence_enabled = True
+        WORKSPACE.mkdir(exist_ok=True)
 
     def speak(self, text: str) -> None:
         print(f"\n{APP_NAME}: {text}\n")
@@ -79,7 +81,7 @@ class HelixMindBioAI:
             return self.status_report(), True
         if command in {"presence on", "stay awake"}:
             self.presence_enabled = True
-            return "Presence mode is on. I will stay in the console and wait for your bioinformatics jobs.", True
+            return "Presence mode is on. I will stay ready for bioinformatics and safe desktop work.", True
         if command in {"presence off", "quiet mode"}:
             self.presence_enabled = False
             return "Quiet mode is on. I will only respond when you type or speak.", True
@@ -89,33 +91,14 @@ class HelixMindBioAI:
         if "time" in command:
             return f"The time is {dt.datetime.now().strftime('%I:%M %p')}.", True
 
-        site_response = self.open_science_site(command)
+        site_response = self.open_science_site(command) or self.open_general_site(command)
         if site_response:
             return site_response, True
 
-        if command.startswith("note "):
-            note = command.replace("note ", "", 1).strip()
-            self.session_notes.append(note)
-            return f"Added session note {len(self.session_notes)}. I will keep it in this session and log it locally.", True
-        if command in {"show notes", "list notes"}:
-            if not self.session_notes:
-                return "No session notes yet. Tell me: helix note your observation."
-            return "Session notes:\n" + "\n".join(f"{i + 1}. {note}" for i, note in enumerate(self.session_notes)), True
-        if command.startswith("add job "):
-            job = command.replace("add job ", "", 1).strip()
-            if not job:
-                return "Give me a job after add job. Example: add job gc content of ATGCGT."
-            self.job_queue.append(job)
-            return f"Job added. Queue length is now {len(self.job_queue)}. Say run jobs when you want me to process them.", True
-        if command in {"show jobs", "list jobs"}:
-            return self.show_jobs(), True
-        if command in {"run jobs", "process jobs", "start work"}:
-            return self.run_jobs(), True
-        if command in {"clear jobs", "empty jobs"}:
-            self.job_queue.clear()
-            return "Job queue cleared.", True
-        if command.startswith("open folder "):
-            return self.open_folder(command.replace("open folder ", "", 1)), True
+        response = self.run_work_command(command)
+        if response:
+            self.completed_jobs.append(command)
+            return self.with_personality(response), True
 
         response = self.run_bio_command(command)
         if response:
@@ -127,10 +110,57 @@ class HelixMindBioAI:
     def with_personality(self, response: str) -> str:
         if not self.presence_enabled:
             return response
-        prefix = "I finished that analysis."
-        if "No " in response or "Could not" in response or "Use:" in response:
-            prefix = "I checked it and need a cleaner input."
+        prefix = "I finished that."
+        if "No " in response or "Could not" in response or "Use:" in response or "blocked" in response.lower():
+            prefix = "I checked it and need a cleaner or safer input."
         return f"{prefix}\n{response}"
+
+    def run_work_command(self, command: str) -> str | None:
+        if command.startswith("note "):
+            note = command.replace("note ", "", 1).strip()
+            self.session_notes.append(note)
+            return f"Added session note {len(self.session_notes)}."
+        if command in {"show notes", "list notes"}:
+            if not self.session_notes:
+                return "No session notes yet. Tell me: helix note your observation."
+            return "Session notes:\n" + "\n".join(f"{i + 1}. {note}" for i, note in enumerate(self.session_notes))
+        if command.startswith("add job "):
+            job = command.replace("add job ", "", 1).strip()
+            if not job:
+                return "Give me a job after add job."
+            self.job_queue.append(job)
+            return f"Job added. Queue length is now {len(self.job_queue)}."
+        if command in {"show jobs", "list jobs"}:
+            return self.show_jobs()
+        if command in {"run jobs", "process jobs", "start work"}:
+            return self.run_jobs()
+        if command in {"clear jobs", "empty jobs"}:
+            self.job_queue.clear()
+            return "Job queue cleared."
+        if command.startswith("open folder "):
+            return self.open_folder(command.replace("open folder ", "", 1))
+        if command.startswith("create folder "):
+            return self.create_folder(command.replace("create folder ", "", 1))
+        if command.startswith("write file "):
+            return self.write_text_file(command)
+        if command.startswith("read file "):
+            return self.read_text_file(command.replace("read file ", "", 1))
+        if command.startswith("list files"):
+            folder = command.replace("list files", "", 1).strip() or str(WORKSPACE)
+            return self.list_files(folder)
+        if command.startswith("make checklist "):
+            return self.make_checklist(command.replace("make checklist ", "", 1))
+        if command.startswith("summarize text "):
+            return self.summarize_text(command.replace("summarize text ", "", 1))
+        if command.startswith("draft email "):
+            return self.draft_email(command.replace("draft email ", "", 1))
+        if command.startswith("open app "):
+            return self.open_app(command.replace("open app ", "", 1))
+        if command.startswith("search web for "):
+            query = command.replace("search web for ", "", 1).strip()
+            webbrowser.open("https://www.google.com/search?q=" + query.replace(" ", "+"))
+            return f"Searching the web for {query}."
+        return None
 
     def run_bio_command(self, command: str) -> str | None:
         if "explain bioinformatics" in command:
@@ -178,25 +208,136 @@ class HelixMindBioAI:
         reports = []
         while self.job_queue:
             job = self.job_queue.pop(0)
-            response = self.run_bio_command(job) or f"I could not run this job: {job}"
+            response = self.run_work_command(job) or self.run_bio_command(job) or f"I could not run this job: {job}"
             self.completed_jobs.append(job)
             reports.append(f"Job: {job}\nResult:\n{response}")
-        return "I processed the queued bioinformatics jobs.\n\n" + "\n\n".join(reports)
+        return "I processed the queued jobs.\n\n" + "\n\n".join(reports)
 
     def show_jobs(self) -> str:
         if not self.job_queue:
-            return "No queued jobs. I am ready for a sequence, FASTA summary, primer check, or PubMed search."
+            return "No queued jobs. I am ready for bioinformatics, notes, files, folders, searches, and app opening."
         return "Queued jobs:\n" + "\n".join(f"{i + 1}. {job}" for i, job in enumerate(self.job_queue))
 
     def status_report(self) -> str:
         return (
             f"I am active inside your local console for {self.active_project}.\n"
+            f"Workspace: {WORKSPACE.resolve()}\n"
             f"Queued jobs: {len(self.job_queue)}\n"
             f"Completed jobs this session: {len(self.completed_jobs)}\n"
             f"Session notes: {len(self.session_notes)}\n"
             f"Presence mode: {'on' if self.presence_enabled else 'off'}\n"
-            "I am not watching private files automatically. Give me a folder, FASTA path, or sequence when you want work done."
+            "I can do safe local work, but I will not delete files, run unknown shell commands, or take over the computer."
         )
+
+    def safe_workspace_path(self, path_text: str) -> Path:
+        cleaned = path_text.strip().strip('"')
+        path = Path(cleaned)
+        if not path.is_absolute():
+            path = WORKSPACE / cleaned
+        resolved_workspace = WORKSPACE.resolve()
+        resolved_path = path.resolve()
+        if resolved_workspace not in resolved_path.parents and resolved_path != resolved_workspace:
+            raise ValueError("For safety, file writing is limited to the HelixMind_Workspace folder.")
+        return resolved_path
+
+    def create_folder(self, folder_text: str) -> str:
+        try:
+            path = self.safe_workspace_path(folder_text)
+            path.mkdir(parents=True, exist_ok=True)
+            return f"Created folder: {path}"
+        except Exception as exc:
+            return f"Could not create folder: {exc}"
+
+    def write_text_file(self, command: str) -> str:
+        match = re.match(r"write file (.+?) with (.+)", command, flags=re.DOTALL)
+        if not match:
+            return "Use: write file notes.txt with your text here"
+        filename, content = match.groups()
+        try:
+            path = self.safe_workspace_path(filename)
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(content + "\n", encoding="utf-8")
+            return f"Wrote file: {path}"
+        except Exception as exc:
+            return f"Could not write file: {exc}"
+
+    def read_text_file(self, path_text: str) -> str:
+        try:
+            path = Path(path_text.strip().strip('"')).expanduser()
+            if not path.exists():
+                path = self.safe_workspace_path(path_text)
+            text = path.read_text(encoding="utf-8")[:3000]
+            return f"File preview for {path}:\n{text}"
+        except Exception as exc:
+            return f"Could not read file: {exc}"
+
+    def list_files(self, folder_text: str) -> str:
+        try:
+            path = Path(folder_text.strip().strip('"')).expanduser()
+            if not path.exists():
+                path = self.safe_workspace_path(folder_text)
+            if not path.exists() or not path.is_dir():
+                return f"Folder not found: {path}"
+            entries = sorted(path.iterdir(), key=lambda item: (not item.is_dir(), item.name.lower()))[:50]
+            if not entries:
+                return f"No files found in {path}."
+            return "Files:\n" + "\n".join(("[folder] " if item.is_dir() else "[file] ") + item.name for item in entries)
+        except Exception as exc:
+            return f"Could not list files: {exc}"
+
+    def make_checklist(self, text: str) -> str:
+        items = [item.strip(" .") for item in re.split(r",|;| and ", text) if item.strip(" .")]
+        if not items:
+            return "Give me checklist items after make checklist."
+        return "Checklist:\n" + "\n".join(f"[ ] {item}" for item in items)
+
+    def summarize_text(self, text: str) -> str:
+        sentences = [part.strip() for part in re.split(r"(?<=[.!?])\s+", text) if part.strip()]
+        if not sentences:
+            return "Give me text to summarize."
+        summary = " ".join(sentences[:3])
+        return f"Short summary:\n{summary}"
+
+    def draft_email(self, text: str) -> str:
+        return (
+            "Email draft:\n"
+            "Subject: Quick update\n\n"
+            "Hi,\n\n"
+            f"{text.strip()}\n\n"
+            "Best,\n"
+        )
+
+    def open_app(self, app_name: str) -> str:
+        apps = {
+            "notepad": "notepad.exe",
+            "calculator": "calc.exe",
+            "paint": "mspaint.exe",
+            "explorer": "explorer.exe",
+            "chrome": "chrome.exe",
+            "vscode": "code.cmd",
+            "vs code": "code.cmd",
+        }
+        key = app_name.strip().lower()
+        if key not in apps:
+            return "I can open: notepad, calculator, paint, explorer, chrome, vscode."
+        try:
+            subprocess.Popen(apps[key], shell=False)
+            return f"Opening {key}."
+        except Exception as exc:
+            return f"Could not open {key}: {exc}"
+
+    def open_general_site(self, command: str) -> str | None:
+        sites = {
+            "open google": "https://www.google.com/",
+            "open youtube": "https://www.youtube.com/",
+            "open github": "https://github.com/",
+            "open chatgpt": "https://chatgpt.com/",
+        }
+        for phrase, url in sites.items():
+            if phrase in command:
+                webbrowser.open(url)
+                return f"Opening {phrase.replace('open ', '')}."
+        return None
 
     def open_science_site(self, command: str) -> str | None:
         sites = {
@@ -264,15 +405,18 @@ class HelixMindBioAI:
 
     def help_text(self) -> str:
         return (
-            "I am your local bioinformatics workspace assistant. Try:\n"
+            "I am your local bioinformatics and safe work assistant. Try:\n"
             "helix status\n"
-            "helix project CRISPR off-target study\n"
             "helix add job gc content of ATGCGCGTTA\n"
-            "helix add job primer stats ATGCGTACGTAGCTAGCTA\n"
+            "helix add job write file plan.txt with analyze FASTA and design primers\n"
             "helix run jobs\n"
-            "helix report ATGCGCGTTA\n"
-            "helix restriction scan GAATTCGGATCC\n"
-            "helix summarize fasta C:\\path\\to\\file.fasta\n"
+            "helix create folder crispr_project\n"
+            "helix write file notes.txt with today I checked primer GC\n"
+            "helix list files\n"
+            "helix make checklist collect FASTA, run GC, design primers\n"
+            "helix summarize text paste your paragraph here\n"
+            "helix open app notepad\n"
+            "helix search web for ncbi blast tutorial\n"
             "helix search pubmed for crispr diagnostics"
         )
 
@@ -282,8 +426,8 @@ class HelixMindBioAI:
 
     def run_text_mode(self) -> None:
         self.speak(
-            "I am awake inside this computer as your local bioinformatics assistant. "
-            "Give me sequences, FASTA files, primers, motifs, or research searches. Type helix help for commands."
+            "I am awake inside this computer as your local work assistant. "
+            "Give me bioinformatics tasks, notes, files, folders, searches, or queued jobs. Type helix help for commands."
         )
         last_heartbeat = time.time()
         while True:
@@ -303,7 +447,7 @@ class HelixMindBioAI:
     def run_voice_mode(self) -> None:
         self.speak(
             "Voice presence mode is ready. Say Helix, then your command. "
-            "I will stay local and wait for bioinformatics work."
+            "I can do bioinformatics and safe desktop work while staying local."
         )
         while True:
             command = self.listen()
