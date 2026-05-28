@@ -1,5 +1,6 @@
 @echo off
-title HelixMind Bio AI
+title JANET - Bioinformatics Desktop Assistant
+color F0
 cd /d "%~dp0"
 
 if not exist ".venv\Scripts\python.exe" (
@@ -9,5 +10,4 @@ if not exist ".venv\Scripts\python.exe" (
   exit /b 1
 )
 
-".venv\Scripts\python.exe" helixmind_bio_ai.py
-pause
+".venv\Scripts\python.exe" janet_chat.py
