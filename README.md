@@ -1,26 +1,48 @@
 # JANET Bio AI
 
-**JANET** is a light-themed, local-first Windows assistant for bioinformatics and desktop work. She is designed to feel like a fast real-time worker living in your computer: ready in the console, accepting text or voice commands, opening apps, typing into the active window, keeping session notes, queueing jobs, handling files in her workspace, and processing sequence tasks locally.
+**JANET** is a light-themed, local-first Windows assistant for bioinformatics and desktop work. She has a ChatGPT-like desktop chat window, a proper desktop shortcut icon, fast command execution, and local bioinformatics tools.
 
 Wake word: `janet`
 
 Legacy wake word: `helix` still works.
 
-## Light Theme
+## What Is New
 
-JANET applies a light Windows console theme at startup:
+- Light ChatGPT-like desktop chat window
+- JANET desktop shortcut icon
+- Windows installer builds `JANETSetup.exe`
+- Fast mode on by default
+- Local workspace: `JANET_Workspace`
+- Local session log: `janet_session_log.txt`
+
+## Desktop App
+
+After installing, open **JANET** from the Start Menu or desktop shortcut.
+
+The app opens a light chat window where you can type commands like:
 
 ```text
-white background + black text
-window title: JANET - Bioinformatics Desktop Assistant
-workspace: JANET_Workspace
-session log: janet_session_log.txt
+janet status
+janet open any app chrome
+janet type text Hello, I am JANET.
+janet gc content of ATGCGCGTTA
+janet search pubmed for crispr diagnostics
 ```
 
-Use this anytime:
+## Icon
+
+JANET uses a clean light bio/AI icon with rounded science-node geometry. It intentionally avoids swastika-like or extremist-looking shapes.
+
+Source icon asset:
 
 ```text
-janet light theme
+assets/janet_icon.svg
+```
+
+Build icon generated during installer build:
+
+```text
+assets/janet_icon.ico
 ```
 
 ## What She Can Control
@@ -52,33 +74,6 @@ janet click
 janet click 500 300
 ```
 
-Example workflow:
-
-```text
-janet add job open any app notepad
-janet add job wait 0.5
-janet add job type text JANET is working inside this computer.
-janet add job hotkey ctrl+s
-janet run jobs
-```
-
-## Personality
-
-JANET is a focused local coworker for bioinformatics, research support, notes, folders, simple files, app control, typing, web searches, and lightweight productivity.
-
-She can:
-
-- stay open in text or voice mode
-- work fast by default
-- report status with `janet status`
-- remember session notes while running
-- queue multiple jobs and process them together
-- write a local session log to `janet_session_log.txt`
-- create and read files inside `JANET_Workspace`
-- open apps and useful websites
-- type into the current active app window
-- work offline for core DNA/RNA/protein analysis
-
 ## Bioinformatics
 
 JANET can help with:
@@ -100,24 +95,30 @@ JANET can help with:
 - simple global alignment scoring
 - PubMed, NCBI, BLAST, UniProt, Ensembl, and PDB opening/searching
 
-## Quick Start
+## Quick Start From Source
 
 1. Install Python 3.10+ and tick **Add python.exe to PATH**.
 2. Double-click `install_helixmind_bio_ai.bat`.
 3. Double-click `HelixMindBioAI.bat`.
-4. Choose `text` or `voice` mode.
 
-If desktop control says dependencies are missing, run `install_helixmind_bio_ai.bat` again.
+## Windows Installer
 
-## Fast Mode
-
-Fast mode is on by default. It turns off voice output in text mode, reduces desktop delays, and keeps responses short.
+GitHub Actions builds a Windows installer:
 
 ```text
-janet fast mode
-janet normal mode
-janet voice output off
-janet voice output on
+JANETSetup.exe
+```
+
+Latest release:
+
+```text
+https://github.com/meenavignesh-svg/HELIX_MINDBIO_AI/releases/latest
+```
+
+Workflow:
+
+```text
+.github/workflows/build-helixmind-bio-ai-installer.yml
 ```
 
 ## Safety Rules
@@ -128,9 +129,3 @@ janet voice output on
 - The assistant does not run unknown shell commands from generated text.
 - File writing is limited to explicit FASTA export commands, the local session log, and `JANET_Workspace`.
 - Restart, shutdown, delete, and system-control destruction are intentionally not implemented.
-
-## Latest Release
-
-```text
-https://github.com/meenavignesh-svg/HELIX_MINDBIO_AI/releases/latest
-```
