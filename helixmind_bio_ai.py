@@ -1,4 +1,4 @@
-"""HelixMind Bio AI - local voice/text assistant for bioinformatics and safe desktop work."""
+"""HelixMind Bio AI - local voice/text assistant for bioinformatics and desktop work."""
 
 from __future__ import annotations
 
@@ -13,12 +13,22 @@ from pathlib import Path
 import pyttsx3
 import speech_recognition as sr
 
+try:
+    import pyautogui
+    import pyperclip
+except Exception:
+    pyautogui = None
+    pyperclip = None
+
 import bioinformatics_tools as bio
 
 WAKE_WORD = "helix"
 APP_NAME = "HelixMind Bio AI"
 LOG_FILE = Path("helixmind_session_log.txt")
 WORKSPACE = Path("HelixMind_Workspace")
+SENSITIVE_WORDS = ("password", "passcode", "otp", "api key", "secret", "token", "private key")
+BLOCKED_KEYS = {"delete", "backspace"}
+BLOCKED_HOTKEYS = {"alt+f4", "ctrl+w", "ctrl+q", "shift+delete"}
 
 
 class HelixMindBioAI:
@@ -81,7 +91,7 @@ class HelixMindBioAI:
             return self.status_report(), True
         if command in {"presence on", "stay awake"}:
             self.presence_enabled = True
-            return "Presence mode is on. I will stay ready for bioinformatics and safe desktop work.", True
+            return "Presence mode is on. I will stay ready for bioinformatics, desktop control, and safe work.", True
         if command in {"presence off", "quiet mode"}:
             self.presence_enabled = False
             return "Quiet mode is on. I will only respond when you type or speak.", True
@@ -95,12 +105,7 @@ class HelixMindBioAI:
         if site_response:
             return site_response, True
 
-        response = self.run_work_command(command)
-        if response:
-            self.completed_jobs.append(command)
-            return self.with_personality(response), True
-
-        response = self.run_bio_command(command)
+        response = self.run_desktop_command(command) or self.run_work_command(command) or self.run_bio_command(command)
         if response:
             self.completed_jobs.append(command)
             return self.with_personality(response), True
@@ -114,6 +119,97 @@ class HelixMindBioAI:
         if "No " in response or "Could not" in response or "Use:" in response or "blocked" in response.lower():
             prefix = "I checked it and need a cleaner or safer input."
         return f"{prefix}\n{response}"
+
+    def desktop_ready(self) -> bool:
+        return pyautogui is not None and pyperclip is not None
+
+    def unsafe_text(self, text: str) -> bool:
+        lowered = text.lower()
+        return any(word in lowered for word in SENSITIVE_WORDS)
+
+    def run_desktop_command(self, command: str) -> str | None:
+        if command == "desktop status":
+            return "Desktop control is ready." if self.desktop_ready() else "Desktop control dependencies are missing. Run install_helixmind_bio_ai.bat again."
+        if command.startswith("open any app "):
+            return self.open_any_app(command.replace("open any app ", "", 1))
+        if command.startswith("type text "):
+            return self.type_text(command.replace("type text ", "", 1))
+        if command.startswith("paste text "):
+            return self.paste_text(command.replace("paste text ", "", 1))
+        if command.startswith("press key "):
+            return self.press_key(command.replace("press key ", "", 1))
+        if command.startswith("hotkey "):
+            return self.hotkey(command.replace("hotkey ", "", 1))
+        if command.startswith("wait "):
+            return self.wait_seconds(command.replace("wait ", "", 1))
+        if command.startswith("click"):
+            return self.click_mouse(command)
+        return None
+
+    def open_any_app(self, app_name: str) -> str:
+        if not self.desktop_ready():
+            return "Desktop control dependencies are missing. Run install_helixmind_bio_ai.bat again."
+        app_name = app_name.strip()
+        if not app_name:
+            return "Use: open any app chrome"
+        pyautogui.hotkey("win")
+        time.sleep(0.4)
+        pyperclip.copy(app_name)
+        pyautogui.hotkey("ctrl", "v")
+        time.sleep(0.4)
+        pyautogui.press("enter")
+        return f"I asked Windows to open: {app_name}."
+
+    def type_text(self, text: str) -> str:
+        if not self.desktop_ready():
+            return "Desktop control dependencies are missing. Run install_helixmind_bio_ai.bat again."
+        if self.unsafe_text(text):
+            return "Blocked: I will not type passwords, secrets, tokens, OTPs, or API keys."
+        pyperclip.copy(text)
+        pyautogui.hotkey("ctrl", "v")
+        return "Typed the requested text into the active window."
+
+    def paste_text(self, text: str) -> str:
+        return self.type_text(text)
+
+    def press_key(self, key: str) -> str:
+        if not self.desktop_ready():
+            return "Desktop control dependencies are missing. Run install_helixmind_bio_ai.bat again."
+        key = key.strip().lower()
+        if key in BLOCKED_KEYS:
+            return f"Blocked: {key} is not allowed as a direct command."
+        pyautogui.press(key)
+        return f"Pressed {key}."
+
+    def hotkey(self, keys_text: str) -> str:
+        if not self.desktop_ready():
+            return "Desktop control dependencies are missing. Run install_helixmind_bio_ai.bat again."
+        cleaned = keys_text.strip().lower().replace(" ", "")
+        if cleaned in BLOCKED_HOTKEYS:
+            return f"Blocked: {cleaned} is not allowed."
+        keys = [key for key in re.split(r"\+|,", cleaned) if key]
+        if not keys or len(keys) > 4:
+            return "Use: hotkey ctrl+s"
+        pyautogui.hotkey(*keys)
+        return f"Pressed hotkey: {'+'.join(keys)}."
+
+    def wait_seconds(self, text: str) -> str:
+        match = re.search(r"\d+", text)
+        seconds = int(match.group()) if match else 1
+        seconds = max(1, min(seconds, 30))
+        time.sleep(seconds)
+        return f"Waited {seconds} second(s)."
+
+    def click_mouse(self, command: str) -> str:
+        if not self.desktop_ready():
+            return "Desktop control dependencies are missing. Run install_helixmind_bio_ai.bat again."
+        match = re.search(r"click\s+(\d+)\s+(\d+)", command)
+        if match:
+            x, y = int(match.group(1)), int(match.group(2))
+            pyautogui.click(x, y)
+            return f"Clicked at {x}, {y}."
+        pyautogui.click()
+        return "Clicked the current mouse position."
 
     def run_work_command(self, command: str) -> str | None:
         if command.startswith("note "):
@@ -208,25 +304,27 @@ class HelixMindBioAI:
         reports = []
         while self.job_queue:
             job = self.job_queue.pop(0)
-            response = self.run_work_command(job) or self.run_bio_command(job) or f"I could not run this job: {job}"
+            response = self.run_desktop_command(job) or self.run_work_command(job) or self.run_bio_command(job) or f"I could not run this job: {job}"
             self.completed_jobs.append(job)
             reports.append(f"Job: {job}\nResult:\n{response}")
         return "I processed the queued jobs.\n\n" + "\n\n".join(reports)
 
     def show_jobs(self) -> str:
         if not self.job_queue:
-            return "No queued jobs. I am ready for bioinformatics, notes, files, folders, searches, and app opening."
+            return "No queued jobs. I am ready for desktop control, bioinformatics, notes, files, folders, searches, and app opening."
         return "Queued jobs:\n" + "\n".join(f"{i + 1}. {job}" for i, job in enumerate(self.job_queue))
 
     def status_report(self) -> str:
+        desktop = "ready" if self.desktop_ready() else "missing dependencies"
         return (
             f"I am active inside your local console for {self.active_project}.\n"
             f"Workspace: {WORKSPACE.resolve()}\n"
+            f"Desktop control: {desktop}\n"
             f"Queued jobs: {len(self.job_queue)}\n"
             f"Completed jobs this session: {len(self.completed_jobs)}\n"
             f"Session notes: {len(self.session_notes)}\n"
             f"Presence mode: {'on' if self.presence_enabled else 'off'}\n"
-            "I can do safe local work, but I will not delete files, run unknown shell commands, or take over the computer."
+            "I can open apps, type into the active window, press keys, and do bioinformatics work. I still block secrets, destructive actions, and hidden control."
         )
 
     def safe_workspace_path(self, path_text: str) -> Path:
@@ -299,13 +397,7 @@ class HelixMindBioAI:
         return f"Short summary:\n{summary}"
 
     def draft_email(self, text: str) -> str:
-        return (
-            "Email draft:\n"
-            "Subject: Quick update\n\n"
-            "Hi,\n\n"
-            f"{text.strip()}\n\n"
-            "Best,\n"
-        )
+        return "Email draft:\nSubject: Quick update\n\nHi,\n\n" + text.strip() + "\n\nBest,\n"
 
     def open_app(self, app_name: str) -> str:
         apps = {
@@ -319,7 +411,7 @@ class HelixMindBioAI:
         }
         key = app_name.strip().lower()
         if key not in apps:
-            return "I can open: notepad, calculator, paint, explorer, chrome, vscode."
+            return "For any installed app, use: open any app app-name"
         try:
             subprocess.Popen(apps[key], shell=False)
             return f"Opening {key}."
@@ -405,18 +497,18 @@ class HelixMindBioAI:
 
     def help_text(self) -> str:
         return (
-            "I am your local bioinformatics and safe work assistant. Try:\n"
-            "helix status\n"
-            "helix add job gc content of ATGCGCGTTA\n"
-            "helix add job write file plan.txt with analyze FASTA and design primers\n"
+            "I am your local bioinformatics and desktop-control assistant. Try:\n"
+            "helix desktop status\n"
+            "helix open any app chrome\n"
+            "helix type text Hello, I am HelixMind.\n"
+            "helix hotkey ctrl+s\n"
+            "helix press key enter\n"
+            "helix wait 2\n"
+            "helix click\n"
+            "helix add job open any app notepad\n"
+            "helix add job type text Sequence report ready.\n"
             "helix run jobs\n"
-            "helix create folder crispr_project\n"
-            "helix write file notes.txt with today I checked primer GC\n"
-            "helix list files\n"
-            "helix make checklist collect FASTA, run GC, design primers\n"
-            "helix summarize text paste your paragraph here\n"
-            "helix open app notepad\n"
-            "helix search web for ncbi blast tutorial\n"
+            "helix gc content of ATGCGCGTTA\n"
             "helix search pubmed for crispr diagnostics"
         )
 
@@ -427,7 +519,7 @@ class HelixMindBioAI:
     def run_text_mode(self) -> None:
         self.speak(
             "I am awake inside this computer as your local work assistant. "
-            "Give me bioinformatics tasks, notes, files, folders, searches, or queued jobs. Type helix help for commands."
+            "I can open apps, type into the active window, manage safe files, and do bioinformatics work. Type helix help for commands."
         )
         last_heartbeat = time.time()
         while True:
@@ -447,7 +539,7 @@ class HelixMindBioAI:
     def run_voice_mode(self) -> None:
         self.speak(
             "Voice presence mode is ready. Say Helix, then your command. "
-            "I can do bioinformatics and safe desktop work while staying local."
+            "I can open apps, type into the active window, and do bioinformatics work while staying local."
         )
         while True:
             command = self.listen()
