@@ -3,16 +3,20 @@
 block_cipher = None
 
 a = Analysis(
-    ["helixmind_bio_ai.py"],
+    ["janet_chat.py"],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[("assets/janet_icon.png", "assets")],
     hiddenimports=[
+        "helixmind_bio_ai",
         "bioinformatics_tools",
         "pyttsx3.drivers",
         "pyttsx3.drivers.sapi5",
         "speech_recognition",
         "pyaudio",
+        "pyautogui",
+        "pyperclip",
+        "tkinter",
     ],
     hookspath=[],
     hooksconfig={},
@@ -28,12 +32,13 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name="HelixMindBioAI",
+    name="JANET",
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    console=True,
+    console=False,
+    icon="assets/janet_icon.ico",
 )
 coll = COLLECT(
     exe,
@@ -42,5 +47,5 @@ coll = COLLECT(
     a.datas,
     strip=False,
     upx=True,
-    name="HelixMindBioAI",
+    name="JANET",
 )
