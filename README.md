@@ -90,6 +90,12 @@ janet click 500 300
 
 JANET can help with DNA/RNA reports, GC content, reverse complements, transcription, translation, ORFs, codon usage, motifs, k-mers, primer stats, restriction-site scans, FASTA summaries, protein weight, sequence comparison, alignment, and PubMed/NCBI/BLAST/UniProt/Ensembl/PDB opening.
 
+## Voice Input
+
+The default desktop installer does not require PyAudio, because PyAudio can break clean Windows CI builds. Text chat, desktop control, AI planning, animation, and bioinformatics tools all work without it.
+
+Voice input can be added later as an optional extra install for machines that have microphone dependencies configured correctly.
+
 ## Safety Rules
 
 - No API keys are hardcoded.
