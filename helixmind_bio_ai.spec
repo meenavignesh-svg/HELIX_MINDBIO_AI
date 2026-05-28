@@ -14,7 +14,6 @@ a = Analysis(
         "pyttsx3.drivers",
         "pyttsx3.drivers.sapi5",
         "speech_recognition",
-        "pyaudio",
         "pyautogui",
         "pyperclip",
         "tkinter",
