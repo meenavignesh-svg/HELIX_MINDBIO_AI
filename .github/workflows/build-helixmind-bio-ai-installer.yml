@@ -1,4 +1,4 @@
-name: Build HelixMind Bio AI Installer
+name: Build JANET Installer
 
 on:
   workflow_dispatch:
@@ -9,6 +9,8 @@ on:
       - "*.py"
       - "requirements_helixmind_bio_ai.txt"
       - "helixmind_bio_ai.spec"
+      - "assets/**"
+      - "tools/**"
       - "installer/**"
       - ".github/workflows/build-helixmind-bio-ai-installer.yml"
 
@@ -33,6 +35,9 @@ jobs:
           pip install -r requirements_helixmind_bio_ai.txt
           pip install pyinstaller
 
+      - name: Generate JANET icon
+        run: python tools/generate_janet_icon.py
+
       - name: Build app
         run: pyinstaller helixmind_bio_ai.spec --noconfirm --clean
 
@@ -49,16 +54,16 @@ jobs:
       - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
-          name: HelixMindBioAISetup
-          path: installer-output\HelixMindBioAISetup.exe
+          name: JANETSetup
+          path: installer-output\JANETSetup.exe
 
       - name: Publish release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: helixmind-bio-ai-latest
-          name: HelixMind Bio AI Latest
-          body: Download HelixMindBioAISetup.exe and run it to install the local bioinformatics assistant.
-          files: installer-output\HelixMindBioAISetup.exe
+          tag_name: janet-latest
+          name: JANET Latest
+          body: Download JANETSetup.exe and run it to install the light-themed bioinformatics desktop assistant.
+          files: installer-output\JANETSetup.exe
           make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
