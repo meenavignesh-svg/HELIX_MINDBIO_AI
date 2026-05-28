@@ -25,10 +25,39 @@ helix show notes
 ```text
 helix add job gc content of ATGCGCGTTA
 helix add job primer stats ATGCGTACGTAGCTAGCTA
-helix add job restriction scan GAATTCGGATCC
+helix add job write file plan.txt with analyze FASTA and design primers
 helix show jobs
 helix run jobs
 helix clear jobs
+```
+
+## General Safe Work
+
+```text
+helix create folder crispr_project
+helix write file notes.txt with today I checked primer GC
+helix read file notes.txt
+helix list files
+helix list files crispr_project
+helix make checklist collect FASTA, run GC, design primers
+helix summarize text paste your paragraph here
+helix draft email I finished the sequence report and primer check
+```
+
+## Apps And Websites
+
+```text
+helix open app notepad
+helix open app calculator
+helix open app paint
+helix open app explorer
+helix open app chrome
+helix open app vscode
+helix open google
+helix open youtube
+helix open github
+helix open chatgpt
+helix search web for ncbi blast tutorial
 ```
 
 ## Core
@@ -81,3 +110,7 @@ helix open pdb
 helix open pubmed
 helix search pubmed for crispr diagnostics
 ```
+
+## Safety Limits
+
+HelixMind will not delete files, restart/shutdown the computer, run unknown shell commands, or silently control private files. General file writing is limited to `HelixMind_Workspace`.
