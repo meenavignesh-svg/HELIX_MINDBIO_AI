@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="JANET icon">
+  <defs>
+    <linearGradient id="bg" x1="36" y1="24" x2="220" y2="232" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#dff7ef"/>
+    </linearGradient>
+    <linearGradient id="ring" x1="55" y1="40" x2="208" y2="218" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#12b981"/>
+      <stop offset="0.55" stop-color="#2563eb"/>
+      <stop offset="1" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="58" fill="url(#bg)"/>
+  <circle cx="128" cy="128" r="86" fill="#ffffff" stroke="url(#ring)" stroke-width="10"/>
+  <path d="M77 142c24-44 78-44 102 0" fill="none" stroke="#111827" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="101" cy="108" r="10" fill="#111827"/>
+  <circle cx="155" cy="108" r="10" fill="#111827"/>
+  <path d="M128 58v24M128 174v24M58 128h24M174 128h24" stroke="#12b981" stroke-width="9" stroke-linecap="round"/>
+  <path d="M82 78c25 20 67 20 92 0M82 178c25-20 67-20 92 0" fill="none" stroke="#2563eb" stroke-width="7" stroke-linecap="round"/>
+  <text x="128" y="232" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="28" font-weight="800" fill="#111827">JANET</text>
+</svg>
